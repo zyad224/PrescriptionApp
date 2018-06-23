@@ -3,21 +3,36 @@ package com.example.zeyad.prescriptionapp;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.zeyad.prescriptionapp.Adapters.ViewPagerAdapter;
+
 public class MainActivity extends AppCompatActivity {
+
+    private Toolbar toolbar;
+    private TabLayout tabs;
+    private ViewPager pager;
+    private ViewPagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        tabs=(TabLayout) findViewById(R.id.tabs);
+        pager=(ViewPager) findViewById(R.id.viewPager);
+        pagerAdapter=new ViewPagerAdapter(getSupportFragmentManager());
+
+        pager.setAdapter(pagerAdapter);
+        tabs.setupWithViewPager(pager);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
