@@ -7,18 +7,34 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.zeyad.prescriptionapp.Adapters.ViewPagerAdapter;
 
+/**
+ * This is the main activity of the the mobile app.
+ * It initializes the interface of the app.
+ *
+ * It consists of:
+ * Toolbar.
+ * TabLayout.
+ * ViewPager.
+ * ViewPagerAdapter.
+ */
 public class MainActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
+    public static Toolbar toolbar;
     private TabLayout tabs;
     private ViewPager pager;
     private ViewPagerAdapter pagerAdapter;
+    private int[] tabIcons={
+            R.drawable.ic_prescription_history,
+            R.drawable.ic_home_icon,
+            R.drawable.ic_add_prescription
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +47,10 @@ public class MainActivity extends AppCompatActivity {
         pager=(ViewPager) findViewById(R.id.viewPager);
         pagerAdapter=new ViewPagerAdapter(getSupportFragmentManager());
 
+
         pager.setAdapter(pagerAdapter);
         tabs.setupWithViewPager(pager);
+        setTabLayoutIcons(tabs);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,6 +59,39 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+
+        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Log.d("zy:","pos:"+tab.getPosition());
+                if(tab.getPosition()==0)
+                    toolbar.setTitle("My Prescriptions");
+                else if(tab.getPosition()==1)
+                    toolbar.setTitle("Home");
+                else if(tab.getPosition()==2)
+                    toolbar.setTitle("New Prescription");
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+                if(tab.getPosition()==0)
+                    toolbar.setTitle("My Prescriptions");
+                else if(tab.getPosition()==1)
+                    toolbar.setTitle("Home");
+                else if(tab.getPosition()==2)
+                    toolbar.setTitle("New Prescription");
+            }
+
+
+        });
+
     }
 
     @Override
@@ -63,5 +114,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setTabLayoutIcons(TabLayout tabs){
+
+        tabs.getTabAt(0).setIcon(tabIcons[0]);
+        tabs.getTabAt(1).setIcon(tabIcons[1]);
+        tabs.getTabAt(2).setIcon(tabIcons[2]);
     }
 }

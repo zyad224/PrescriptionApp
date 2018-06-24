@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.zeyad.prescriptionapp.MainActivity;
 import com.example.zeyad.prescriptionapp.R;
 
 /**
@@ -32,6 +33,7 @@ public class PrescriptionLog extends Fragment {
 
     public PrescriptionLog() {
         // Required empty public constructor
+
     }
 
     /**
