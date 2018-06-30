@@ -14,7 +14,7 @@ import com.example.zeyad.prescriptionapp.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link PrescriptionLog.OnFragmentInteractionListener} interface
+ *
  * to handle interaction events.
  * Use the {@link PrescriptionLog#newInstance} factory method to
  * create an instance of this fragment.

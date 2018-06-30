@@ -1,6 +1,17 @@
 <resources>
     <string name="app_name">PrescriptionApp</string>
     <string name="action_settings">Settings</string>
+    <string name="feedbackname">your name</string>
+    <string name="PrescriptionViewTitle">Fill Your Prescription Details</string>
+    <string name="PrescriptionName">Prescription Name</string>
+    <string name="DoctorName">Doctor Name</string>
+    <string name="DoctorNumber">Doctor Number</string>
+    <string name="PrescriptionTimeDose">Insert Time and Dose</string>
+    <string name="Time">8:00</string>
+    <string name="Dose">1 pill</string>
+
+
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

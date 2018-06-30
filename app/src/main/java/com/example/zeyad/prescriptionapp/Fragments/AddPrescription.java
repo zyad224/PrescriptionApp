@@ -8,6 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.Toolbar;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.zeyad.prescriptionapp.MainActivity;
 import com.example.zeyad.prescriptionapp.R;
@@ -15,12 +19,12 @@ import com.example.zeyad.prescriptionapp.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link AddPrescription.OnFragmentInteractionListener} interface
+ *
  * to handle interaction events.
  * Use the {@link AddPrescription#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddPrescription extends Fragment {
+public class AddPrescription extends Fragment implements AdapterView.OnItemSelectedListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -29,11 +33,14 @@ public class AddPrescription extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private Spinner PillsSpinner;
+    String[] PillsAmount={"Pills","1","2","3","4"};
 
   //  private OnFragmentInteractionListener mListener;
 
     public AddPrescription() {
         // Required empty public constructor
+
     }
 
     /**
@@ -67,8 +74,25 @@ public class AddPrescription extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_add_prescription, container, false);
+        PillsSpinner = (Spinner) view.findViewById(R.id.Dose);
+        PillsSpinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) this);
+        ArrayAdapter aa = new ArrayAdapter(getContext(),android.R.layout.simple_spinner_item,PillsAmount);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        PillsSpinner.setAdapter(aa);
+        return view;
+    }
 
-        return inflater.inflate(R.layout.fragment_add_prescription, container, false);
+
+    @Override
+    public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
+        Toast.makeText(getContext(), PillsAmount[position], Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0) {
+// TODO Auto-generated method stub
+
     }
 
 //    // TODO: Rename method, update argument and hook method into UI event

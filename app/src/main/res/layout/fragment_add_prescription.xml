@@ -1,13 +1,122 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/Animation.AppCompat.DropDownUp"
     tools:context="com.example.zeyad.prescriptionapp.Fragments.AddPrescription">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="hello add fragment" />
 
-</FrameLayout>
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/ScrollView01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="top|right">
+
+
+                <TextView
+                    android:id="@+id/PrescriptionViewTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/PrescriptionViewTitle"
+                    android:textSize="10pt">
+                </TextView>
+
+                <EditText
+                    android:id="@+id/PrescriptionName"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/PrescriptionName"
+                    android:inputType="textPersonName"
+                    android:layout_width="fill_parent">
+                </EditText>
+
+                <EditText
+                    android:id="@+id/DoctorName"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/DoctorName"
+                    android:inputType="textPersonName"
+                    android:layout_width="fill_parent">
+                </EditText>
+
+                <EditText
+                    android:id="@+id/DoctorNumber"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/DoctorNumber"
+                    android:inputType="phone"
+                    android:layout_width="fill_parent">
+                </EditText>
+
+            <TextView
+                android:id="@+id/PrescriptionTimeDose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/PrescriptionTimeDose"
+                android:textSize="10pt">
+            </TextView>
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                >
+
+                <TimePicker
+                    android:id="@+id/Time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="120dip"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:timePickerMode="spinner" />
+
+                <Spinner
+                    android:id="@+id/Dose"
+                    android:layout_width="150dip"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/Time"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:spinnerMode="dropdown"
+                    android:layout_marginTop="120dp" />
+
+
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/AddTimeDoseFab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/Time"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="50dp"
+                    android:src="@android:drawable/ic_input_add" />
+
+
+            </RelativeLayout>
+            <ListView
+                android:id="@android:id/list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:drawSelectorOnTop="false"
+                android:textSize="7pt"
+                android:paddingTop="2dip"
+                android:paddingBottom="2dip"
+                android:textColor="@android:color/black"
+                android:gravity="center"
+                />
+        </LinearLayout>
+
+
+
+    </ScrollView>
+
+
+
+
+
+</android.support.design.widget.CoordinatorLayout>
