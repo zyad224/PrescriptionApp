@@ -37,6 +37,12 @@
                     android:layout_width="fill_parent">
                 </EditText>
 
+            <Spinner
+                android:id="@+id/PrescriptionType"
+                android:layout_width="150dip"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"
+                 />
                 <EditText
                     android:id="@+id/DoctorName"
                     android:layout_height="wrap_content"
@@ -98,17 +104,17 @@
 
 
             </RelativeLayout>
+
             <ListView
-                android:id="@android:id/list"
+                android:id="@+id/TimeDoseList"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="100dp"
                 android:drawSelectorOnTop="false"
-                android:textSize="7pt"
-                android:paddingTop="2dip"
-                android:paddingBottom="2dip"
-                android:textColor="@android:color/black"
                 android:gravity="center"
-                />
+                android:paddingBottom="2dip"
+                android:paddingTop="2dip"
+                android:textColor="@android:color/black"
+                android:textSize="7pt" />
         </LinearLayout>
 
 
