@@ -1,31 +1,28 @@
 package com.example.zeyad.prescriptionapp.Fragments;
 
-import android.content.Context;
 import android.content.DialogInterface;
-import android.net.Uri;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.WindowDecorActionBar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v7.widget.Toolbar;
 import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
-import com.example.zeyad.prescriptionapp.MainActivity;
+import com.example.zeyad.prescriptionapp.Adapters.ListAdapterAddPres;
 import com.example.zeyad.prescriptionapp.R;
 
-import java.sql.Time;
 import java.util.ArrayList;
 
 /**
@@ -36,7 +33,7 @@ import java.util.ArrayList;
  * Use the {@link AddPrescription#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddPrescription extends Fragment implements AdapterView.OnItemSelectedListener {
+public class AddPrescription extends Fragment  {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -45,18 +42,23 @@ public class AddPrescription extends Fragment implements AdapterView.OnItemSelec
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private Spinner PillsSpinner,PrescripitonTypeSpinner;
+    private Spinner DoseSpinner,PrescripitonTypeSpinner;
     private TimePicker tp;
-    private FloatingActionButton TimeDosefab;
+    private FloatingActionButton TimeDosefab,Resetfab;
     private ArrayAdapter presTypeAdapter;
     private ArrayAdapter presDoseAdapter;
-    private ArrayAdapter<String> ListTimeDoseAdapter;
+    private ListAdapterAddPres ListTimeDoseAdapter;
     private ListView TimeDoselist;
     private ArrayList<String> arrayList;
-    private String[] PillsAmount={"Dose","1","2","3","4"};
-    private String[] PrescriptionType={"Type","Pills","Syrup","Eyedrops","Injection"};
+    private String[] DoseAmountArray={"Dose","1","2","3","4"};
+    private String[] PrescriptionTypeArray={"Type","Pills","Syrup","Eyedrops","Injection"};
     private String hours,minutes,am_pm;
-  //  private OnFragmentInteractionListener mListener;
+    private String PrescriptionName, DoctorName,DoctorNumber;
+    private String PrescriptionType, PrescriptionDose;
+    private EditText presName,docName,docNumber;
+
+    View view;
+   // private OnFragmentInteractionListener mListener;
 
     public AddPrescription() {
         // Required empty public constructor
@@ -94,27 +96,39 @@ public class AddPrescription extends Fragment implements AdapterView.OnItemSelec
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_add_prescription, container, false);
-
-        setPillsAmountSpinner(view);
-        setPrescriptionTypeSpinner(view);
-        setTimePicker(view);
-        setTimeDoseList(view);
-
-
+        view = inflater.inflate(R.layout.fragment_add_prescription, container, false);
+        addPrescriptionGUI(view);
         return view;
     }
 
-    private void setTimeDoseList(View view){
+
+    private void addPrescriptionGUI(View view){
+
+        initializeEditText(view);
+        initializePrescriptionTypeSpinner(view);
+        initializeTimePicker(view);
+        initializeDoseAmountSpinner(view);
+        initializeTimeDoseList(view);
+
+
+    }
+
+    private void initializeEditText(View view){
+        presName=(EditText)view.findViewById(R.id.PrescriptionName);
+        docName=(EditText)view.findViewById(R.id.DoctorName);
+        docNumber=(EditText)view.findViewById(R.id.DoctorNumber);
+    }
+    private void initializeTimeDoseList(View view){
 
 
 
         TimeDoselist = (ListView) view.findViewById(R.id.TimeDoseList);
         TimeDosefab= (FloatingActionButton) view.findViewById(R.id.AddTimeDoseFab);
-        arrayList = new ArrayList<String>();
-        ListTimeDoseAdapter=new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, arrayList);
-        TimeDoselist.setAdapter(ListTimeDoseAdapter);
+        Resetfab=(FloatingActionButton)view.findViewById(R.id.ResetFab);
 
+        arrayList = new ArrayList<String>();
+        ListTimeDoseAdapter=new ListAdapterAddPres(this.getContext(), android.R.layout.simple_list_item_1, arrayList);
+        TimeDoselist.setAdapter(ListTimeDoseAdapter);
 
         TimeDoselist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
@@ -126,11 +140,21 @@ public class AddPrescription extends Fragment implements AdapterView.OnItemSelec
                 adb.setPositiveButton("Ok", new AlertDialog.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         arrayList.remove(positionToRemove);
-                        ListTimeDoseAdapter.notifyDataSetChanged();
+                        ListTimeDoseAdapter.updateList();
                     }});
                 adb.show();
             }
         });
+
+        fabListeners();
+
+
+
+        Log.d("list", "list content: "+arrayList);
+
+    }
+
+    private void fabListeners(){
 
         TimeDosefab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,32 +163,79 @@ public class AddPrescription extends Fragment implements AdapterView.OnItemSelec
                 anim.setDuration(200L);
                 TimeDosefab.startAnimation(anim);
 
+                PrescriptionName=presName.getText().toString();
+                DoctorName=docName.getText().toString();
+                DoctorNumber=docNumber.getText().toString();
+                PrescriptionType= PrescripitonTypeSpinner.getSelectedItem().toString();
+                PrescriptionDose = DoseSpinner.getSelectedItem().toString();
 
+                if((!PrescriptionDose.equals("Dose"))&& (hours!=null&&minutes!=null&&am_pm!=null)
+                        && (!PrescriptionType.equals("Type"))&&(!PrescriptionName.isEmpty()
+                        && !DoctorName.isEmpty()&& !DoctorNumber.isEmpty()))
+                {
+                    addTimeDoseToListView();
+                }
+                else
+                {
+                    fillMissingFields();
 
-                String Dose = PillsSpinner.getSelectedItem().toString();
-                Log.d("fab:", "onTimeChanged: size:"+ hours+"-"+minutes+"-"+am_pm);
-
-                if(Dose != null && !Dose.equals("Dose")&&(hours!=null&&minutes!=null&&am_pm!=null)){
-
-                    if(minutes.length()==1)
-                        minutes="0"+minutes;
-
-                    String Time=hours+":"+minutes+":"+am_pm;
-
-                    arrayList.add(Time+"  "+ Dose);
-                    ListTimeDoseAdapter.notifyDataSetChanged();
-                    Snackbar.make(getActivity().findViewById(android.R.id.content), "You Added a new Time/Dosage", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                    Log.d("fab:", "onTimeChanged: k");
                 }
 
+            }
+        });
+
+        Resetfab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Animation anim = android.view.animation.AnimationUtils.loadAnimation(TimeDosefab.getContext(),R.anim.shake2);
+                anim.setDuration(200L);
+                Resetfab.startAnimation(anim);
+                clearGUIElements();
 
             }
         });
 
     }
 
-    private void setTimePicker(View view){
+    private void fillMissingFields(){
+        if(PrescriptionName.isEmpty()){
+            Snackbar.make(getActivity().findViewById(android.R.id.content),
+                    "Please Add a Prescription Name", Snackbar.LENGTH_LONG).show();
+        }
+        else if(PrescriptionType.equals("Type")){
+            Snackbar.make(getActivity().findViewById(android.R.id.content),
+                    "Please Choose a Prescription Type", Snackbar.LENGTH_LONG).show();
+        }
+        else if(DoctorName.isEmpty()){
+            Snackbar.make(getActivity().findViewById(android.R.id.content),
+                    "Please Add a Doctor Name", Snackbar.LENGTH_LONG).show();
+        }
+        else if(DoctorNumber.isEmpty()){
+            Snackbar.make(getActivity().findViewById(android.R.id.content),
+                    "Please Add a Doctor Number", Snackbar.LENGTH_LONG).show();
+        }
+        else if(hours==null||minutes==null||am_pm==null){
+            Snackbar.make(getActivity().findViewById(android.R.id.content),
+                    "Please Choose  a Time", Snackbar.LENGTH_LONG).show();
+        }
+        else if(PrescriptionDose.equals("Dose")){
+            Snackbar.make(getActivity().findViewById(android.R.id.content),
+                    "Please Choose a Dose", Snackbar.LENGTH_LONG).show();
+        }
+
+    }
+    private void addTimeDoseToListView(){
+        if(minutes.length()==1)
+            minutes="0"+minutes;
+
+        String TimeOfDose=hours+":"+minutes+":"+am_pm;
+        arrayList.add(TimeOfDose+"-"+PrescriptionDose+PrescriptionType);
+        ListTimeDoseAdapter.updateList();
+        Snackbar.make(getActivity().findViewById(android.R.id.content),
+                "You Added a new Time/Dosage", Snackbar.LENGTH_LONG).show();
+        Log.d("fab:", "onTimeChanged: k");
+    }
+    private void initializeTimePicker(View view){
 
         tp = (TimePicker)view.findViewById(R.id.Time);
         tp.setIs24HourView(true);
@@ -187,28 +258,87 @@ public class AddPrescription extends Fragment implements AdapterView.OnItemSelec
         });
     }
 
-    private void setPrescriptionTypeSpinner(View view){
+    private void  initializePrescriptionTypeSpinner(View view){
         PrescripitonTypeSpinner = (Spinner) view.findViewById(R.id.PrescriptionType);
-        PrescripitonTypeSpinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) this);
-        presTypeAdapter = new ArrayAdapter(getContext(),android.R.layout.simple_spinner_item,PrescriptionType);
+        presTypeAdapter = new ArrayAdapter(getContext(),android.R.layout.simple_spinner_item,PrescriptionTypeArray);
         presTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         PrescripitonTypeSpinner.setAdapter(presTypeAdapter);
+
+        PrescripitonTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                Log.d("type", "onItemSelected: "+PrescriptionTypeArray[position] );
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
     }
-    private void setPillsAmountSpinner(View view){
-        PillsSpinner = (Spinner) view.findViewById(R.id.Dose);
-        PillsSpinner.setOnItemSelectedListener((AdapterView.OnItemSelectedListener) this);
-        presDoseAdapter = new ArrayAdapter(getContext(),android.R.layout.simple_spinner_item,PillsAmount);
+    private void initializeDoseAmountSpinner(View view){
+        DoseSpinner = (Spinner) view.findViewById(R.id.Dose);
+        presDoseAdapter = new ArrayAdapter(getContext(),android.R.layout.simple_spinner_item,DoseAmountArray);
         presDoseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        PillsSpinner.setAdapter(presDoseAdapter);
-    }
-    @Override
-    public void onItemSelected(AdapterView<?> arg0, View arg1, int position,long id) {
+        DoseSpinner.setAdapter(presDoseAdapter);
 
+        DoseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                Log.d("type", "onItemSelected: "+DoseAmountArray[position] );
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+    }
+
+
+  private void clearGUIElements(){
+      if(arrayList!=null) {
+          arrayList.clear();
+          ListTimeDoseAdapter.updateList();
+      }
+
+      if(presName!=null&&docName!=null&&docNumber!=null) {
+          presName.setText("");
+          docName.setText("");
+          docNumber.setText("");
+          PrescriptionName="";
+          DoctorName="";
+          DoctorNumber="";
+          DoseSpinner.setSelection(0);
+          PrescripitonTypeSpinner.setSelection(0);
+          presName.requestFocus();
+          Log.d("gui name", "setUserVisibleHint: " + PrescriptionName + ":" + DoctorName + ":" + DoctorNumber);
+      }
+  }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser&&view!=null){
+
+            onResume();
+
+            //This means this fragment is visible to user so you can write code to refresh the fragment here by reloaded the data.
+
+        }
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> arg0) {
-// TODO Auto-generated method stub
+    public void onResume() {
+        super.onResume();
+        if (!getUserVisibleHint())
+             return;
+
+        clearGUIElements();
 
     }
 

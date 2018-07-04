@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@style/Animation.AppCompat.DropDownUp"
     tools:context="com.example.zeyad.prescriptionapp.Fragments.AddPrescription">
 
@@ -74,7 +75,7 @@
 
                 <TimePicker
                     android:id="@+id/Time"
-                    android:layout_width="wrap_content"
+                    android:layout_width="170dip"
                     android:layout_height="120dip"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
@@ -99,16 +100,25 @@
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@+id/Time"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginStart="50dp"
+                    android:layout_marginStart="40dp"
                     android:src="@android:drawable/ic_input_add" />
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/ResetFab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/AddTimeDoseFab"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginStart="40dp"
+                    android:src="@android:drawable/ic_menu_revert"
+                    app:backgroundTint="@android:color/background_dark"/>
 
 
             </RelativeLayout>
 
             <ListView
                 android:id="@+id/TimeDoseList"
-                android:layout_width="fill_parent"
-                android:layout_height="100dp"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
                 android:drawSelectorOnTop="false"
                 android:gravity="center"
                 android:paddingBottom="2dip"

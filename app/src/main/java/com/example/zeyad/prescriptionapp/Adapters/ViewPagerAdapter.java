@@ -3,6 +3,7 @@ package com.example.zeyad.prescriptionapp.Adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 import com.example.zeyad.prescriptionapp.Fragments.AddPrescription;
 import com.example.zeyad.prescriptionapp.Fragments.Home;
@@ -33,16 +34,22 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
      * This method return the fragment depending on which tab the user selects.
      */
     public Fragment getItem(int position) {
-        Fragment newFragment=null;
+        Fragment x=null;
 
-        if(position==0)
-            newFragment= new PrescriptionLog();
-        else if(position==1)
-            newFragment=new Home();
-        else if(position==2)
-            newFragment= new AddPrescription();
+        if(position==0) {
+             x= new PrescriptionLog();
+        }
+        else if(position==1) {
+             x = new Home();
+        }
 
-        return newFragment;
+        else if(position==2) {
+             x= new AddPrescription();
+
+            Log.d("in", "getItem:1 ");
+        }
+
+        return x;
     }
 
     @Override
