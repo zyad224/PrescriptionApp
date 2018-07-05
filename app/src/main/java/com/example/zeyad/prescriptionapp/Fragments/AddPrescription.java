@@ -53,9 +53,9 @@ public class AddPrescription extends Fragment  {
     private String[] DoseAmountArray={"Dose","1","2","3","4"};
     private String[] PrescriptionTypeArray={"Type","Pills","Syrup","Eyedrops","Injection"};
     private String hours,minutes,am_pm;
-    private String PrescriptionName, DoctorName,DoctorNumber;
+    private String PrescriptionName, NumberOFTakings,DoctorName,DoctorNumber;
     private String PrescriptionType, PrescriptionDose;
-    private EditText presName,docName,docNumber;
+    private EditText presName,takings,docName,docNumber;
 
     View view;
    // private OnFragmentInteractionListener mListener;
@@ -110,13 +110,13 @@ public class AddPrescription extends Fragment  {
         initializeDoseAmountSpinner(view);
         initializeTimeDoseList(view);
 
-
     }
 
     private void initializeEditText(View view){
         presName=(EditText)view.findViewById(R.id.PrescriptionName);
         docName=(EditText)view.findViewById(R.id.DoctorName);
         docNumber=(EditText)view.findViewById(R.id.DoctorNumber);
+        takings=(EditText)view.findViewById(R.id.Takings);
     }
     private void initializeTimeDoseList(View view){
 
@@ -166,12 +166,13 @@ public class AddPrescription extends Fragment  {
                 PrescriptionName=presName.getText().toString();
                 DoctorName=docName.getText().toString();
                 DoctorNumber=docNumber.getText().toString();
+                NumberOFTakings=takings.getText().toString();
                 PrescriptionType= PrescripitonTypeSpinner.getSelectedItem().toString();
                 PrescriptionDose = DoseSpinner.getSelectedItem().toString();
 
                 if((!PrescriptionDose.equals("Dose"))&& (hours!=null&&minutes!=null&&am_pm!=null)
                         && (!PrescriptionType.equals("Type"))&&(!PrescriptionName.isEmpty()
-                        && !DoctorName.isEmpty()&& !DoctorNumber.isEmpty()))
+                        && !DoctorName.isEmpty()&& !DoctorNumber.isEmpty() && !NumberOFTakings.isEmpty()))
                 {
                     addTimeDoseToListView();
                 }
@@ -206,6 +207,10 @@ public class AddPrescription extends Fragment  {
             Snackbar.make(getActivity().findViewById(android.R.id.content),
                     "Please Choose a Prescription Type", Snackbar.LENGTH_LONG).show();
         }
+        else if(NumberOFTakings.isEmpty()){
+            Snackbar.make(getActivity().findViewById(android.R.id.content),
+                    "Please Add the number of Takings", Snackbar.LENGTH_LONG).show();
+        }
         else if(DoctorName.isEmpty()){
             Snackbar.make(getActivity().findViewById(android.R.id.content),
                     "Please Add a Doctor Name", Snackbar.LENGTH_LONG).show();
@@ -229,7 +234,7 @@ public class AddPrescription extends Fragment  {
             minutes="0"+minutes;
 
         String TimeOfDose=hours+":"+minutes+":"+am_pm;
-        arrayList.add(TimeOfDose+"-"+PrescriptionDose+PrescriptionType);
+        arrayList.add(TimeOfDose+"-"+PrescriptionName+"-"+PrescriptionDose+PrescriptionType);
         ListTimeDoseAdapter.updateList();
         Snackbar.make(getActivity().findViewById(android.R.id.content),
                 "You Added a new Time/Dosage", Snackbar.LENGTH_LONG).show();
@@ -305,11 +310,13 @@ public class AddPrescription extends Fragment  {
           ListTimeDoseAdapter.updateList();
       }
 
-      if(presName!=null&&docName!=null&&docNumber!=null) {
+      if(presName!=null&&docName!=null&&docNumber!=null&&takings!=null) {
           presName.setText("");
+          takings.setText("");
           docName.setText("");
           docNumber.setText("");
           PrescriptionName="";
+          NumberOFTakings="";
           DoctorName="";
           DoctorNumber="";
           DoseSpinner.setSelection(0);

@@ -44,6 +44,14 @@
                 android:layout_height="wrap_content"
                 android:spinnerMode="dropdown"
                  />
+            <EditText
+                android:id="@+id/Takings"
+                android:layout_height="wrap_content"
+                android:hint="@string/Takings"
+                android:inputType="phone"
+                android:layout_width="fill_parent">
+            </EditText>
+
                 <EditText
                     android:id="@+id/DoctorName"
                     android:layout_height="wrap_content"
