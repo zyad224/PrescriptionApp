@@ -21,13 +21,16 @@ public class User {
     @ColumnInfo(name="password")
     public String password;
 
+    @ColumnInfo(name="name")
+    public String name;
+
     @Ignore
     public String encryptedPassword;
 
     @Ignore
     public String decryptedPassword;
 
-    public User(String userName,String password){
+    public User(String userName,String password, String name){
 
         try {
             encryptedPassword=AES.encrypt(password);
@@ -37,6 +40,7 @@ public class User {
 
         this.userName=userName;
         this.password=encryptedPassword;
+        this.name=name;
     }
 
     public String getUserName(){
@@ -50,6 +54,10 @@ public class User {
             e.printStackTrace();
         }
         return decryptedPassword;
+    }
+
+    public String getName(){
+        return this.name;
     }
 
 }

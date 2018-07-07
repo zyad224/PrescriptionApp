@@ -56,6 +56,7 @@ public class AddPrescription extends Fragment  {
     private String PrescriptionName, NumberOFTakings,DoctorName,DoctorNumber;
     private String PrescriptionType, PrescriptionDose;
     private EditText presName,takings,docName,docNumber;
+    static int maximumSizeOfTimeDoseList=5;
 
     View view;
    // private OnFragmentInteractionListener mListener;
@@ -141,6 +142,9 @@ public class AddPrescription extends Fragment  {
                     public void onClick(DialogInterface dialog, int which) {
                         arrayList.remove(positionToRemove);
                         ListTimeDoseAdapter.updateList();
+                        maximumSizeOfTimeDoseList++;
+                        Log.d("maxR", "list max: "+maximumSizeOfTimeDoseList);
+
                     }});
                 adb.show();
             }
@@ -234,11 +238,20 @@ public class AddPrescription extends Fragment  {
             minutes="0"+minutes;
 
         String TimeOfDose=hours+":"+minutes+":"+am_pm;
-        arrayList.add(TimeOfDose+"-"+PrescriptionName+"-"+PrescriptionDose+PrescriptionType);
-        ListTimeDoseAdapter.updateList();
-        Snackbar.make(getActivity().findViewById(android.R.id.content),
-                "You Added a new Time/Dosage", Snackbar.LENGTH_LONG).show();
-        Log.d("fab:", "onTimeChanged: k");
+
+        if(maximumSizeOfTimeDoseList>0) {
+            arrayList.add(TimeOfDose + "-" + PrescriptionName + "-" + PrescriptionDose + PrescriptionType);
+            ListTimeDoseAdapter.updateList();
+            maximumSizeOfTimeDoseList--;
+            Snackbar.make(getActivity().findViewById(android.R.id.content),
+                    "You Added a new Time/Dosage", Snackbar.LENGTH_LONG).show();
+            Log.d("maxA", "list max: "+maximumSizeOfTimeDoseList);
+
+        }
+        else{
+            Snackbar.make(getActivity().findViewById(android.R.id.content),
+                    "You cant add more, The List is full", Snackbar.LENGTH_LONG).show();
+        }
     }
     private void initializeTimePicker(View view){
 
@@ -307,6 +320,9 @@ public class AddPrescription extends Fragment  {
   private void clearGUIElements(){
       if(arrayList!=null) {
           arrayList.clear();
+          maximumSizeOfTimeDoseList=5;
+          Log.d("maxClear", "list max: "+maximumSizeOfTimeDoseList);
+
           ListTimeDoseAdapter.updateList();
       }
 
