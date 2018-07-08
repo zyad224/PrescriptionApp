@@ -1,0 +1,20 @@
+package com.example.zeyad.prescriptionapp.Database;
+
+import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Query;
+
+import java.util.List;
+
+/**
+ * Created by Zeyad on 7/8/2018.
+ */
+
+@Dao
+public interface UserDao {
+
+    @Query("SELECT * FROM User")
+    public List<User> getAllUsers ();
+
+    @Query("SELECT * FROM User WHERE userName LIKE :username")
+    public User getSpecificUser (String username);
+}

@@ -14,11 +14,10 @@
     <string name="username">Choose a username </string>
     <string name="passwordSignup">Choose a password </string>
     <string name="createAccount">Create Account </string>
-    <string name="alreadyMember">Already a member? Login </string>
-    <string name="NoAccount">No Account ? Create One Now </string>
+    <string name="alreadyMember">Already a member? Login &#9829;</string>
+    <string name="NoAccount">No Account ? Create One Now &#x1F60A;</string>
     <string name="login">Login </string>
     <string name="passwordSignin">password </string>
-
 
 
 

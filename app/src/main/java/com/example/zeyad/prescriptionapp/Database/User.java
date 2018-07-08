@@ -6,12 +6,14 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
+
 /**
  * Created by Zeyad on 7/5/2018.
  */
 
 @Entity
-public class User {
+public class User implements Serializable {
 
 
 
@@ -23,6 +25,9 @@ public class User {
 
     @ColumnInfo(name="name")
     public String name;
+
+    @ColumnInfo(name="signed")
+    public boolean signed;
 
     @Ignore
     public String encryptedPassword;
@@ -41,6 +46,7 @@ public class User {
         this.userName=userName;
         this.password=encryptedPassword;
         this.name=name;
+        this.signed=false;
     }
 
     public String getUserName(){
@@ -58,6 +64,15 @@ public class User {
 
     public String getName(){
         return this.name;
+    }
+
+    public boolean getSigned(){
+        return this.signed;
+    }
+
+    @Override
+    public String toString() {
+        return "User [username=" + userName + ", pass=" + password + "]";
     }
 
 }

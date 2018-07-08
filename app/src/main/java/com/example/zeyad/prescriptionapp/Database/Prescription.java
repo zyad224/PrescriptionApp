@@ -35,6 +35,9 @@ public class Prescription {
     @ColumnInfo(name="number_takings")
     public int numberTakings;
 
+    @ColumnInfo(name="forget_takings")
+    public int forgetTakings;
+
     @ColumnInfo(name="doctor_name")
     public String doctorName;
 
@@ -44,24 +47,16 @@ public class Prescription {
     @ColumnInfo(name="prescription_dose")
     public int prescriptionDose;
 
-    @ColumnInfo(name="dose_time1")
-    public String time1;
-    @ColumnInfo(name="dose_time2")
-    public String time2;
-    @ColumnInfo(name="dose_time3")
-    public String time3;
-    @ColumnInfo(name="dose_time4")
-    public String time4;
-    @ColumnInfo(name="dose_time5")
-    public String time5;
+    @ColumnInfo(name="dose_time")
+    public String doseTime;
+
 
     @ColumnInfo(name="user_id")
     public String user_id;
 
 
     public Prescription(String prescriptionName,String prescriptionType,int numberTakings,String doctorName,
-                        String doctorNumber, int prescriptionDose,String time1,String time2,
-            String time3,String time4,String time5, String user_id){
+                        String doctorNumber, int prescriptionDose,String doseTime, String user_id){
 
         this.prescriptionName=prescriptionName;
         this.prescriptionType=prescriptionType;
@@ -69,11 +64,8 @@ public class Prescription {
         this.doctorName=doctorName;
         this.doctorNumber=doctorNumber;
         this.prescriptionDose=prescriptionDose;
-        this.time1=time1;
-        this.time2=time2;
-        this.time3=time3;
-        this.time4=time4;
-        this.time5=time5;
+        this.doseTime=doseTime;
+        this.forgetTakings=0;
         this.user_id=user_id;
 
     }
@@ -96,22 +88,10 @@ public class Prescription {
     public int getPrescriptionDoese(){
         return this.prescriptionDose;
     }
-
-    public String getDoseTime1(){
-        return  this.time1;
+    public String getDoseTime(){
+        return  this.doseTime;
     }
-    public String getDoseTime2(){
-        return  this.time2;
-    }
-    public String getDoseTime3(){
-        return  this.time3;
-    }
-    public String getDoseTime4(){
-        return  this.time4;
-    }
-    public String getDoseTime5(){
-        return  this.time5;
-    }
+    public int getForgetTakings(){return  this.forgetTakings;}
     public String getUser_id(){
         return this.user_id;
     }

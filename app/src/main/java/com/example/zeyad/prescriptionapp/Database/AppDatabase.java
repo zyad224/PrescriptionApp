@@ -13,6 +13,8 @@ import android.arch.persistence.room.migration.Migration;
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract PrescriptionDao prescriptionDao();
+    public abstract UserDao userDao();
+
 
 
 
