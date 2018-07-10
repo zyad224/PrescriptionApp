@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.zeyad.prescriptionapp.Adapters.ViewPagerAdapter;
+import com.example.zeyad.prescriptionapp.Database.AES;
 import com.example.zeyad.prescriptionapp.Database.User;
 import com.example.zeyad.prescriptionapp.Fragments.AddPrescription;
 
@@ -29,8 +30,7 @@ import com.example.zeyad.prescriptionapp.Fragments.AddPrescription;
  */
 public class MainActivity extends AppCompatActivity {
 
-    public static Toolbar toolbar;
-
+    private  Toolbar toolbar;
     private TabLayout tabs;
     private ViewPager pager;
     private ViewPagerAdapter pagerAdapter;
@@ -39,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.ic_home_icon,
             R.drawable.ic_add_prescription
     };
+
+    public static User signedInUser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,15 +58,15 @@ public class MainActivity extends AppCompatActivity {
         pager.setAdapter(pagerAdapter);
         tabs.setupWithViewPager(pager);
         setTabLayoutIcons(tabs);
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
 
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -102,8 +105,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-        User u=(User)intent.getSerializableExtra("user");
+         signedInUser=(User)intent.getSerializableExtra("user");
+        try{
+            Log.d("u passwrod main", "onCreate: "+ AES.decrypt(signedInUser.getPassword())+" -"+signedInUser.getUserName());
 
+
+        }catch(Exception e){
+
+        }
 
     }
 

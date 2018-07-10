@@ -1,7 +1,10 @@
 package com.example.zeyad.prescriptionapp;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.Image;
+import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +13,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.zeyad.prescriptionapp.Database.AppDatabase;
+import com.example.zeyad.prescriptionapp.Database.User;
 import com.example.zeyad.prescriptionapp.R;
 
 
@@ -25,6 +31,7 @@ public class SignupActivity extends AppCompatActivity {
     private TextView tv;
     private ImageView img;
     private String Name,UserName,Password;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +56,15 @@ public class SignupActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-               validateUserinput();
-                   //send to db
+                if(validateUserinput()){
+                    //async task
+                    String[] credentials =new String [3] ;
+                    credentials[0]=Name;
+                    credentials[1]=UserName;
+                    credentials[2]=Password;
+                    new signUpAsyncTask().execute(credentials);
+
+                }
 
             }
         });
@@ -103,5 +117,57 @@ public class SignupActivity extends AppCompatActivity {
                         "Please Add your Password", Snackbar.LENGTH_LONG).show();
         }
         return false;
+    }
+
+    private  class signUpAsyncTask extends AsyncTask<String[], Void, Boolean> {
+
+        private User u;
+
+        @Override
+        protected void onPreExecute() {
+
+            signup.setEnabled(false);
+            progressDialog = new ProgressDialog(SignupActivity.this,
+                    R.style.Theme_AppCompat_DayNight_Dialog);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage("Creating an Account...");
+            progressDialog.show();
+        }
+        @Override
+        protected Boolean doInBackground(String[]... credentials) {
+
+            String cre []= credentials[0];
+            AppDatabase db= SigninActivity.getDB();
+            u= db.userDao().getSpecificUser(cre[1]);
+            if(u==null) {
+                User newUser = new User(cre[1], cre[2], cre[0]);
+                db.userDao().insertUser(newUser);
+                return true;
+            }
+
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean signUpResult) {
+
+            progressDialog.dismiss();
+            signup.setEnabled(true);
+
+            if(signUpResult) {
+                Snackbar.make(findViewById(android.R.id.content),
+                        "your account has been created", Snackbar.LENGTH_LONG).show();
+            }
+            else{
+                Snackbar.make(findViewById(android.R.id.content),
+                        "This account already exists. Please sign in", Snackbar.LENGTH_LONG).show();
+            }
+
+
+
+
+        }
+
+
     }
 }

@@ -133,6 +133,10 @@
                 android:paddingTop="2dip"
                 android:textColor="@android:color/black"
                 android:textSize="7pt" />
+
+
+
+
         </LinearLayout>
 
 
@@ -141,6 +145,12 @@
 
 
 
-
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/insertPresInDB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@android:drawable/stat_sys_upload_done" />
 
 </android.support.design.widget.CoordinatorLayout>

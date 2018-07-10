@@ -5,6 +5,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,11 +24,13 @@ public class Prescription {
 
 
 
-    @PrimaryKey(autoGenerate = true)
-    public int id;
+//    @PrimaryKey(autoGenerate = true)
+//    public int id;
 
-    @ColumnInfo(name = "prescription_name")
-    public String prescriptionName;
+    @PrimaryKey
+    @ColumnInfo(name="prescription_name")
+    @NonNull public String prescriptionName;
+
 
     @ColumnInfo(name="prescription_type")
     public String prescriptionType;
@@ -55,6 +58,22 @@ public class Prescription {
     public String user_id;
 
 
+
+
+
+    public Prescription(String prescriptionName,String prescriptionType,int numberTakings,int forgetTakings,String doctorName,
+                        String doctorNumber, int prescriptionDose, String user_id){
+        this.prescriptionName=prescriptionName;
+        this.prescriptionType=prescriptionType;
+        this.numberTakings=numberTakings;
+        this.forgetTakings=forgetTakings;
+        this.doctorName=doctorName;
+        this.doctorNumber=doctorNumber;
+        this.prescriptionDose=prescriptionDose;
+        this.user_id=user_id;
+
+    }
+    @Ignore
     public Prescription(String prescriptionName,String prescriptionType,int numberTakings,String doctorName,
                         String doctorNumber, int prescriptionDose,String doseTime, String user_id){
 
@@ -65,7 +84,6 @@ public class Prescription {
         this.doctorNumber=doctorNumber;
         this.prescriptionDose=prescriptionDose;
         this.doseTime=doseTime;
-        this.forgetTakings=0;
         this.user_id=user_id;
 
     }
@@ -95,9 +113,7 @@ public class Prescription {
     public String getUser_id(){
         return this.user_id;
     }
-    public int getId(){
-        return this.id;
-    }
+
 
 
 

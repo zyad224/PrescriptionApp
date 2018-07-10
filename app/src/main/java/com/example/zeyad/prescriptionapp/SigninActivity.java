@@ -29,8 +29,10 @@ public class SigninActivity extends AppCompatActivity {
     private TextView tv;
     private ImageView img;
     private String UserName,Password;
-    private static AppDatabase db;
     private ProgressDialog progressDialog;
+
+    public static AppDatabase db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,15 @@ public class SigninActivity extends AppCompatActivity {
         login.setTextColor(Color.WHITE);
         resizeAppIcon(img);
 
+        // control of database
+        if (db==null) {
+            db = Room.databaseBuilder(getApplicationContext(),
+                    AppDatabase.class, "app_db2")
+                    .fallbackToDestructiveMigration()
+                    .build();
+            Log.d("db", "onCreate: db");
+        }
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,7 +70,6 @@ public class SigninActivity extends AppCompatActivity {
                     credentials[1]=Password;
                     new signInAsyncTask().execute(credentials);
                 }
-                //send to db
 
             }
         });
@@ -73,12 +83,7 @@ public class SigninActivity extends AppCompatActivity {
             }
         });
 
-        // control of database
-        if (db==null)
-            db = Room.databaseBuilder(getApplicationContext(),
-                    AppDatabase.class, "app_db")
-                    .addMigrations( AppDatabase.MIGRATION_0_1)
-                    .build();
+
     }
 
 

@@ -1,0 +1,216 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 2,
+    "identityHash": "b362123cf6ea4e0870e1455d815c9d2c",
+    "entities": [
+      {
+        "tableName": "Prescription",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`prescription_name` TEXT NOT NULL, `prescription_type` TEXT, `number_takings` INTEGER NOT NULL, `forget_takings` INTEGER NOT NULL, `doctor_name` TEXT, `doctor_number` TEXT, `prescription_dose` INTEGER NOT NULL, `dose_time` TEXT, `user_id` TEXT, PRIMARY KEY(`prescription_name`), FOREIGN KEY(`user_id`) REFERENCES `User`(`userName`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "prescriptionName",
+            "columnName": "prescription_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "prescriptionType",
+            "columnName": "prescription_type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "numberTakings",
+            "columnName": "number_takings",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "forgetTakings",
+            "columnName": "forget_takings",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "doctorName",
+            "columnName": "doctor_name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "doctorNumber",
+            "columnName": "doctor_number",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "prescriptionDose",
+            "columnName": "prescription_dose",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "doseTime",
+            "columnName": "dose_time",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user_id",
+            "columnName": "user_id",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "prescription_name"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "User",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user_id"
+            ],
+            "referencedColumns": [
+              "userName"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "User",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userName` TEXT NOT NULL, `password` TEXT, `name` TEXT, `signed` INTEGER NOT NULL, PRIMARY KEY(`userName`))",
+        "fields": [
+          {
+            "fieldPath": "userName",
+            "columnName": "userName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "password",
+            "columnName": "password",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "signed",
+            "columnName": "signed",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "userName"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "DoseTime",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `dose_time1` TEXT, `dose_time2` TEXT, `dose_time3` TEXT, `dose_time4` TEXT, `dose_time5` TEXT, `prescription` TEXT, `user` TEXT, FOREIGN KEY(`prescription`) REFERENCES `Prescription`(`prescription_name`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`user`) REFERENCES `User`(`userName`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "doseTime1",
+            "columnName": "dose_time1",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "doseTime2",
+            "columnName": "dose_time2",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "doseTime3",
+            "columnName": "dose_time3",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "doseTime4",
+            "columnName": "dose_time4",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "doseTime5",
+            "columnName": "dose_time5",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "prescription",
+            "columnName": "prescription",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "user",
+            "columnName": "user",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "Prescription",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "prescription"
+            ],
+            "referencedColumns": [
+              "prescription_name"
+            ]
+          },
+          {
+            "table": "User",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "user"
+            ],
+            "referencedColumns": [
+              "userName"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"b362123cf6ea4e0870e1455d815c9d2c\")"
+    ]
+  }
+}

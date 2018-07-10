@@ -8,6 +8,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
+
+import com.example.zeyad.prescriptionapp.Database.Prescription;
 
 import java.util.ArrayList;
 
@@ -15,11 +18,11 @@ import java.util.ArrayList;
  * Created by Zeyad on 7/3/2018.
  */
 
-public class ListAdapterAddPres extends ArrayAdapter<String> {
+public class ListAdapterAddPres extends ArrayAdapter<Prescription> {
 
-    private ArrayList<String>tempList;
+    private ArrayList<Prescription>tempList;
 
-    public ListAdapterAddPres(@NonNull Context context, int resource, ArrayList<String> textViewResourceId) {
+    public ListAdapterAddPres(@NonNull Context context, int resource, ArrayList<Prescription> textViewResourceId) {
         super(context, resource, textViewResourceId);
         tempList=textViewResourceId;
     }
@@ -36,13 +39,15 @@ public class ListAdapterAddPres extends ArrayAdapter<String> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = super.getView(position, convertView, parent);
-        if (position % 2 == 0) {
-            view.setBackgroundColor(Color.RED);
-        } else {
-            view.setBackgroundColor(Color.WHITE);
-        }
+        TextView viewItem = (TextView) super.getView(position, convertView, parent);
+        if (position % 2 == 0)
+            viewItem.setBackgroundColor(Color.RED);
+         else
+            viewItem.setBackgroundColor(Color.WHITE);
 
-        return view;
+        viewItem.setText(getItem(position).getDoseTime()+"-"+getItem(position).getPrescriptionName()
+                +"-"+getItem(position).getPrescriptionDoese()+" "+getItem(position).getPrescriptionType());
+
+        return viewItem;
     }
 }

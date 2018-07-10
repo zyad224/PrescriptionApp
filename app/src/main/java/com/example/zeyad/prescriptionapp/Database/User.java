@@ -56,9 +56,11 @@ public class User implements Serializable {
     public String getPassword(){
         try {
             decryptedPassword = AES.decrypt(this.password);
+
         }catch (Exception e){
             e.printStackTrace();
         }
+
         return decryptedPassword;
     }
 

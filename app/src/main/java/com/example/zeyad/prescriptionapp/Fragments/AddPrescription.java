@@ -1,7 +1,9 @@
 package com.example.zeyad.prescriptionapp.Fragments;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,9 +23,17 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import com.example.zeyad.prescriptionapp.Adapters.ListAdapterAddPres;
+import com.example.zeyad.prescriptionapp.Database.AppDatabase;
+import com.example.zeyad.prescriptionapp.Database.DoseTime;
+import com.example.zeyad.prescriptionapp.Database.Prescription;
+import com.example.zeyad.prescriptionapp.Database.User;
+import com.example.zeyad.prescriptionapp.MainActivity;
 import com.example.zeyad.prescriptionapp.R;
+import com.example.zeyad.prescriptionapp.SigninActivity;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,12 +54,12 @@ public class AddPrescription extends Fragment  {
     private String mParam2;
     private Spinner DoseSpinner,PrescripitonTypeSpinner;
     private TimePicker tp;
-    private FloatingActionButton TimeDosefab,Resetfab;
+    private FloatingActionButton TimeDosefab,Resetfab,insertPresInDB;
     private ArrayAdapter presTypeAdapter;
     private ArrayAdapter presDoseAdapter;
     private ListAdapterAddPres ListTimeDoseAdapter;
     private ListView TimeDoselist;
-    private ArrayList<String> arrayList;
+    private ArrayList<Prescription> arrayList;
     private String[] DoseAmountArray={"Dose","1","2","3","4"};
     private String[] PrescriptionTypeArray={"Type","Pills","Syrup","Eyedrops","Injection"};
     private String hours,minutes,am_pm;
@@ -57,6 +67,8 @@ public class AddPrescription extends Fragment  {
     private String PrescriptionType, PrescriptionDose;
     private EditText presName,takings,docName,docNumber;
     static int maximumSizeOfTimeDoseList=5;
+    private ProgressDialog progressDialog;
+
 
     View view;
    // private OnFragmentInteractionListener mListener;
@@ -91,6 +103,7 @@ public class AddPrescription extends Fragment  {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
@@ -126,8 +139,10 @@ public class AddPrescription extends Fragment  {
         TimeDoselist = (ListView) view.findViewById(R.id.TimeDoseList);
         TimeDosefab= (FloatingActionButton) view.findViewById(R.id.AddTimeDoseFab);
         Resetfab=(FloatingActionButton)view.findViewById(R.id.ResetFab);
+        insertPresInDB=(FloatingActionButton)view.findViewById(R.id.insertPresInDB);
 
-        arrayList = new ArrayList<String>();
+
+        arrayList = new ArrayList<Prescription>();
         ListTimeDoseAdapter=new ListAdapterAddPres(this.getContext(), android.R.layout.simple_list_item_1, arrayList);
         TimeDoselist.setAdapter(ListTimeDoseAdapter);
 
@@ -178,7 +193,8 @@ public class AddPrescription extends Fragment  {
                         && (!PrescriptionType.equals("Type"))&&(!PrescriptionName.isEmpty()
                         && !DoctorName.isEmpty()&& !DoctorNumber.isEmpty() && !NumberOFTakings.isEmpty()))
                 {
-                    addTimeDoseToListView();
+                    enableForm(false);
+                    addPrescriptionListView();
                 }
                 else
                 {
@@ -200,8 +216,41 @@ public class AddPrescription extends Fragment  {
             }
         });
 
+        insertPresInDB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(!arrayList.isEmpty()) {
+                    Animation anim = android.view.animation.AnimationUtils.loadAnimation(TimeDosefab.getContext(), R.anim.shake);
+                    anim.setDuration(200L);
+                    insertPresInDB.startAnimation(anim);
+                   new addPrescriptionAsyncTask().execute(arrayList);
+
+
+                }
+                else{
+
+                    Snackbar.make(getActivity().findViewById(android.R.id.content),
+                            "Please fill the form and add your Time/Doses", Snackbar.LENGTH_LONG).show();
+                }
+               // clearGUIElements();
+
+            }
+        });
+
     }
 
+
+    private void enableForm(boolean decision){
+
+        presName.setEnabled(decision);
+        docName.setEnabled(decision);
+        docNumber.setEnabled(decision);
+        takings.setEnabled(decision);
+        PrescripitonTypeSpinner.setEnabled(decision);
+        DoseSpinner.setEnabled(decision);
+
+    }
     private void fillMissingFields(){
         if(PrescriptionName.isEmpty()){
             Snackbar.make(getActivity().findViewById(android.R.id.content),
@@ -233,14 +282,17 @@ public class AddPrescription extends Fragment  {
         }
 
     }
-    private void addTimeDoseToListView(){
+    private void addPrescriptionListView(){
         if(minutes.length()==1)
             minutes="0"+minutes;
 
         String TimeOfDose=hours+":"+minutes+":"+am_pm;
 
         if(maximumSizeOfTimeDoseList>0) {
-            arrayList.add(TimeOfDose + "-" + PrescriptionName + "-" + PrescriptionDose + PrescriptionType);
+            Prescription newPres=new Prescription(PrescriptionName,PrescriptionType, Integer.parseInt(NumberOFTakings),
+                    DoctorName,DoctorNumber,Integer.parseInt(PrescriptionDose),TimeOfDose,MainActivity.signedInUser.getUserName());
+
+            arrayList.add(newPres);
             ListTimeDoseAdapter.updateList();
             maximumSizeOfTimeDoseList--;
             Snackbar.make(getActivity().findViewById(android.R.id.content),
@@ -250,7 +302,7 @@ public class AddPrescription extends Fragment  {
         }
         else{
             Snackbar.make(getActivity().findViewById(android.R.id.content),
-                    "You cant add more, The List is full", Snackbar.LENGTH_LONG).show();
+                    "You cant add more, The List is full (remove from list or submit)", Snackbar.LENGTH_LONG).show();
         }
     }
     private void initializeTimePicker(View view){
@@ -340,7 +392,126 @@ public class AddPrescription extends Fragment  {
           presName.requestFocus();
           Log.d("gui name", "setUserVisibleHint: " + PrescriptionName + ":" + DoctorName + ":" + DoctorNumber);
       }
+
+      enableForm(true);
   }
+
+    private  class addPrescriptionAsyncTask extends AsyncTask<ArrayList<Prescription>, Void, Boolean> {
+
+        private User u;
+
+        @Override
+        protected void onPreExecute() {
+
+            insertPresInDB.setEnabled(false);
+            progressDialog = new ProgressDialog(getContext(),
+                    R.style.Theme_AppCompat_DayNight_Dialog);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setMessage("Authenticating...");
+            progressDialog.show();
+        }
+        @Override
+        protected Boolean doInBackground(ArrayList<Prescription>... prescriptions) {
+
+            ArrayList<Prescription> presc= prescriptions[0];
+            u= MainActivity.signedInUser;
+            String dosetime1="";
+            String dosetime2="";
+            String dosetime3="";
+            String dosetime4="";
+            String dosetime5="";
+
+            switch(presc.size()){
+                case 1:
+                    dosetime1=presc.get(0).getDoseTime();
+                    break;
+                case 2:
+                    dosetime1=presc.get(0).getDoseTime();
+                    dosetime2=presc.get(1).getDoseTime();
+                    break;
+                case 3:
+                    dosetime1=presc.get(0).getDoseTime();
+                    dosetime2=presc.get(1).getDoseTime();
+                    dosetime3=presc.get(2).getDoseTime();
+                    break;
+                case 4:
+                    dosetime1=presc.get(0).getDoseTime();
+                    dosetime2=presc.get(1).getDoseTime();
+                    dosetime3=presc.get(2).getDoseTime();
+                    dosetime4=presc.get(3).getDoseTime();
+                    break;
+                case 5:
+                    dosetime1=presc.get(0).getDoseTime();
+                    dosetime2=presc.get(1).getDoseTime();
+                    dosetime3=presc.get(2).getDoseTime();
+                    dosetime4=presc.get(3).getDoseTime();
+                    dosetime5=presc.get(4).getDoseTime();
+                    break;
+
+            }
+
+
+            String prescName=presc.get(0).getPrescriptionName();
+            String prescType=presc.get(0).getPrescriptionType();
+            int prescTakings=presc.get(0).getTakings();
+            int forgetTakings=0;
+            String docName=presc.get(0).getDoctorName();
+            String docNum=presc.get(0).getDoctorNumber();
+            int dose=presc.get(0).getPrescriptionDoese();
+            String username= u.getUserName();
+            AppDatabase db= SigninActivity.getDB();
+
+            try {
+                Prescription newPrescription = new Prescription(prescName, prescType, prescTakings, forgetTakings,
+                        docName, docNum, dose, username);
+
+                db.prescriptionDao().insertPrescription(newPrescription);
+
+                DoseTime prescriptionTime = new DoseTime(dosetime1, dosetime2, dosetime3, dosetime4, dosetime5, prescName, username);
+                db.dosetimeDao().insertPrescriptionTime(prescriptionTime);
+
+                List<Prescription> temp= db.prescriptionDao().getUserPrescription(username);
+                List<DoseTime> temp2=db.dosetimeDao().getPrescriptionDoseTime(prescName,username);
+
+                System.out.println("pres:" +temp.size());
+                System.out.println("pres:" +temp2.size());
+                System.out.println("pres:" +temp.get(4).getPrescriptionName());
+                System.out.println("pres:" +temp2.get(0).getDoseTime1()+""+temp2.get(0).getDoseTime2()+""+temp2.get(0).getDoseTime3());
+
+
+                return true;
+            }catch (Exception e){
+                Log.d("exception in inserting", "doInBackground: "+ e);
+
+            }
+
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean insertingResult) {
+
+            progressDialog.dismiss();
+            insertPresInDB.setEnabled(true);
+
+            if(insertingResult) {
+                Snackbar.make(getActivity().findViewById(android.R.id.content),
+                        "You added a new Prescription!", Snackbar.LENGTH_LONG).show();
+            }
+            else{
+                Snackbar.make(getActivity().findViewById(android.R.id.content),
+                        "Cant add the Prescription", Snackbar.LENGTH_LONG).show();
+
+            }
+
+
+
+
+
+        }
+
+
+    }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -353,6 +524,10 @@ public class AddPrescription extends Fragment  {
             //This means this fragment is visible to user so you can write code to refresh the fragment here by reloaded the data.
 
         }
+
+      //  Log.d("addpres", "onCreate: "+MainActivity.signedInUser.getUserName());
+
+
     }
 
     @Override
