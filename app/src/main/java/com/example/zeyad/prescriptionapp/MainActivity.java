@@ -58,15 +58,8 @@ public class MainActivity extends AppCompatActivity {
         pager.setAdapter(pagerAdapter);
         tabs.setupWithViewPager(pager);
         setTabLayoutIcons(tabs);
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+      // pager.setOffscreenPageLimit(2);
+
 
 
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -106,13 +99,13 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
          signedInUser=(User)intent.getSerializableExtra("user");
-        try{
-            Log.d("u passwrod main", "onCreate: "+ AES.decrypt(signedInUser.getPassword())+" -"+signedInUser.getUserName());
-
-
-        }catch(Exception e){
-
-        }
+//        try{
+//            Log.d("u passwrod main", "onCreate: "+ AES.decrypt(signedInUser.getPassword())+" -"+signedInUser.getUserName());
+//
+//
+//        }catch(Exception e){
+//
+//        }
 
     }
 

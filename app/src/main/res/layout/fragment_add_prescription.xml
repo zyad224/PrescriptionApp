@@ -123,16 +123,8 @@
 
             </RelativeLayout>
 
-            <ListView
-                android:id="@+id/TimeDoseList"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:drawSelectorOnTop="false"
-                android:gravity="center"
-                android:paddingBottom="2dip"
-                android:paddingTop="2dip"
-                android:textColor="@android:color/black"
-                android:textSize="7pt" />
+
+
 
 
 
@@ -144,6 +136,16 @@
     </ScrollView>
 
 
+    <ListView
+        android:id="@+id/TimeDoseList"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:drawSelectorOnTop="false"
+        android:layout_gravity="bottom"
+        android:paddingBottom="2dip"
+        android:paddingTop="2dip"
+        android:textColor="@android:color/black"
+        android:textSize="7pt" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/insertPresInDB"

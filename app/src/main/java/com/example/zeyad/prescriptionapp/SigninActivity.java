@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.example.zeyad.prescriptionapp.Database.AES;
 import com.example.zeyad.prescriptionapp.Database.AppDatabase;
 import com.example.zeyad.prescriptionapp.Database.User;
 
@@ -130,10 +131,20 @@ public class SigninActivity extends AppCompatActivity {
 
             String cre []= credentials[0];
             u= db.userDao().getSpecificUser(cre[0]);
+            boolean flag=false;
+            try {
+                String decPass=AES.decrypt(u.getPassword());
+                System.out.println("cree eq:"+decPass +"  "+cre[1]);
+                if(decPass.equals(cre[1])){
+                    flag= true;
+                }
+            }catch(Exception e){
+             flag=false;
+            }
             if(u==null)
-                return false;
+                flag= false;
 
-            return true;
+            return flag;
         }
 
         @Override
@@ -144,7 +155,7 @@ public class SigninActivity extends AppCompatActivity {
 
             if(!credentialResult) {
                 Snackbar.make(findViewById(android.R.id.content),
-                        "No User Found, Please Sign Up!", Snackbar.LENGTH_LONG).show();
+                        "No User Found/No such credentials, Please Sign Up!", Snackbar.LENGTH_LONG).show();
             }
             else{
                 Intent intent = new Intent( getApplicationContext(),MainActivity.class);

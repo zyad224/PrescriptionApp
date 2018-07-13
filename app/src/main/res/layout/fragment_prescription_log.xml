@@ -1,13 +1,22 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.example.zeyad.prescriptionapp.Fragments.PrescriptionLog">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+
+    <ListView
+        android:id="@+id/PresLogList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="log fragment" />
+        android:drawSelectorOnTop="false"
+        android:layout_gravity="bottom"
+        android:paddingBottom="2dip"
+        android:paddingTop="2dip"
+        android:textColor="@android:color/black"
+        android:textSize="7pt" />
 
-</FrameLayout>
+</LinearLayout>

@@ -1,10 +1,12 @@
 package com.example.zeyad.prescriptionapp.Database;
 
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,4 +24,6 @@ public interface PrescriptionDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPrescription(Prescription p);
+    @Query ("Delete From Prescription WHERE user_id LIKE :username AND prescription_name LIKE :pname ")
+    void deletePrescription(String pname, String username);
 }

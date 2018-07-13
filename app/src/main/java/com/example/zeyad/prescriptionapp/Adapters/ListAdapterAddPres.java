@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.example.zeyad.prescriptionapp.Database.Prescription;
+import com.example.zeyad.prescriptionapp.R;
 
 import java.util.ArrayList;
 
@@ -46,7 +47,8 @@ public class ListAdapterAddPres extends ArrayAdapter<Prescription> {
             viewItem.setBackgroundColor(Color.WHITE);
 
         viewItem.setText(getItem(position).getDoseTime()+"-"+getItem(position).getPrescriptionName()
-                +"-"+getItem(position).getPrescriptionDoese()+" "+getItem(position).getPrescriptionType());
+                +"-"+getItem(position).getPrescriptionDoese()+" "+getItem(position).getPrescriptionType()
+        +"             " +getContext().getString(R.string.cancelMark));
 
         return viewItem;
     }

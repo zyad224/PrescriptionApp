@@ -34,6 +34,7 @@ import com.example.zeyad.prescriptionapp.SigninActivity;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.zip.Inflater;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,8 +71,7 @@ public class AddPrescription extends Fragment  {
     private ProgressDialog progressDialog;
 
 
-    View view;
-   // private OnFragmentInteractionListener mListener;
+    private View view;
 
     public AddPrescription() {
         // Required empty public constructor
@@ -148,6 +148,7 @@ public class AddPrescription extends Fragment  {
 
         TimeDoselist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
+
                 AlertDialog.Builder adb=new AlertDialog.Builder(getContext());
                 adb.setTitle("Delete");
                 adb.setMessage("Are you sure you want to delete this Time and Dose ? ");
@@ -407,7 +408,7 @@ public class AddPrescription extends Fragment  {
             progressDialog = new ProgressDialog(getContext(),
                     R.style.Theme_AppCompat_DayNight_Dialog);
             progressDialog.setIndeterminate(true);
-            progressDialog.setMessage("Authenticating...");
+            progressDialog.setMessage("Adding a new Prescription!...");
             progressDialog.show();
         }
         @Override
@@ -473,11 +474,6 @@ public class AddPrescription extends Fragment  {
                 List<Prescription> temp= db.prescriptionDao().getUserPrescription(username);
                 List<DoseTime> temp2=db.dosetimeDao().getPrescriptionDoseTime(prescName,username);
 
-                System.out.println("pres:" +temp.size());
-                System.out.println("pres:" +temp2.size());
-                System.out.println("pres:" +temp.get(4).getPrescriptionName());
-                System.out.println("pres:" +temp2.get(0).getDoseTime1()+""+temp2.get(0).getDoseTime2()+""+temp2.get(0).getDoseTime3());
-
 
                 return true;
             }catch (Exception e){
@@ -536,46 +532,10 @@ public class AddPrescription extends Fragment  {
         if (!getUserVisibleHint())
              return;
 
+
         clearGUIElements();
 
     }
 
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-//
-//    /**
-//     * This interface must be implemented by activities that contain this
-//     * fragment to allow an interaction in this fragment to be communicated
-//     * to the activity and potentially other fragments contained in that
-//     * activity.
-//     * <p>
-//     * See the Android Training lesson <a href=
-//     * "http://developer.android.com/training/basics/fragments/communicating.html"
-//     * >Communicating with Other Fragments</a> for more information.
-//     */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onFragmentInteraction(Uri uri);
-//    }
+
 }
