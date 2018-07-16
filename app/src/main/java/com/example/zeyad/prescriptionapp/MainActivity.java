@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public static User signedInUser;
+    private SwipeRefreshLayout SwipeRefreshLayout;
 
 
     @Override
@@ -53,12 +55,14 @@ public class MainActivity extends AppCompatActivity {
         tabs=(TabLayout) findViewById(R.id.tabs);
         pager=(ViewPager) findViewById(R.id.viewPager);
         pagerAdapter=new ViewPagerAdapter(getSupportFragmentManager());
+        //SwipeRefreshLayout=(SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+
 
 
         pager.setAdapter(pagerAdapter);
         tabs.setupWithViewPager(pager);
         setTabLayoutIcons(tabs);
-      // pager.setOffscreenPageLimit(2);
+        pager.setOffscreenPageLimit(2);
 
 
 
@@ -98,16 +102,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Intent intent = getIntent();
-         signedInUser=(User)intent.getSerializableExtra("user");
-//        try{
-//            Log.d("u passwrod main", "onCreate: "+ AES.decrypt(signedInUser.getPassword())+" -"+signedInUser.getUserName());
-//
-//
-//        }catch(Exception e){
-//
-//        }
+        signedInUser=(User)intent.getSerializableExtra("user");
+
 
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -136,5 +136,11 @@ public class MainActivity extends AppCompatActivity {
         tabs.getTabAt(0).setIcon(tabIcons[0]);
         tabs.getTabAt(1).setIcon(tabIcons[1]);
         tabs.getTabAt(2).setIcon(tabIcons[2]);
+    }
+
+
+
+    public  SwipeRefreshLayout getSwipeRefreshLayout(){
+        return this.SwipeRefreshLayout;
     }
 }

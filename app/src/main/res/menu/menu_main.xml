@@ -2,6 +2,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.zeyad.prescriptionapp.MainActivity">
+
+
+    <item
+        android:id="@+id/menu_refresh"
+        android:title="@string/refreshLog"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

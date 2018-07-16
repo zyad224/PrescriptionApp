@@ -7,6 +7,27 @@
 
     <!-- TODO: Update blank fragment layout -->
 
+    <EditText
+        android:id="@+id/searchPrescriptionLog"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:hint="@string/search"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        >
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/swiperefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+
 
     <ListView
         android:id="@+id/PresLogList"
@@ -18,5 +39,12 @@
         android:paddingTop="2dip"
         android:textColor="@android:color/black"
         android:textSize="7pt" />
+
+
+
+
+</android.support.v4.widget.SwipeRefreshLayout>
+    </RelativeLayout>
+
 
 </LinearLayout>

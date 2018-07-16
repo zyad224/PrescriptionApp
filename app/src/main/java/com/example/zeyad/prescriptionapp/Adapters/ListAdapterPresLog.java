@@ -24,6 +24,7 @@ import com.example.zeyad.prescriptionapp.SigninActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static android.app.PendingIntent.getActivity;
 
@@ -34,13 +35,15 @@ import static android.app.PendingIntent.getActivity;
 public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
 
     private List<Prescription> list;
+    private  ArrayList<Prescription>copyList;
     private ProgressDialog progressDialog;
     private Button delete;
 
-
+    public static int counter=0;
     public ListAdapterPresLog(@NonNull Context context, int resource, List<Prescription> textViewResourceId) {
         super(context, resource, textViewResourceId);
         list=textViewResourceId;
+        this.copyList=new ArrayList<Prescription>();
 
     }
 
@@ -59,24 +62,24 @@ public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
         }
 
         TextView listItemText = (TextView)view.findViewById(R.id.list_item_string);
-        listItemText.setText(list.get(position).getPrescriptionName());
-         delete = (Button)view.findViewById(R.id.delete);
+        listItemText.setText(list.get(position).getPrescriptionName() +"-"+
+                list.get(position).getPrescriptionType());
 
+        drawPrescriptionImage(listItemText,list.get(position).getPrescriptionType());
+
+
+        delete = (Button)view.findViewById(R.id.delete);
+        delete.setBackgroundColor(Color.BLACK);
+        delete.setTextColor(Color.WHITE);
         final int positionToRemove = position;
         final Integer positionToRemoveDb=position;
         delete.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //do something
 
-
-
-                System.out.println("name:"+list.get(positionToRemove).getPrescriptionName());
                 new delPrescAsyncTask().execute(list.get(positionToRemove).getPrescriptionName());
-
                 list.remove(positionToRemove);
                 notifyDataSetChanged();
-
 
             }
         });
@@ -84,6 +87,66 @@ public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
         return view;
     }
 
+    private void drawPrescriptionImage(TextView listItemText, String prescriptionType){
+
+        switch(prescriptionType){
+            case("Pills"):
+                listItemText.setCompoundDrawablesWithIntrinsicBounds(
+                        R.mipmap.pills, 0, 0, 0);
+                break;
+            case("Syrup"):
+                listItemText.setCompoundDrawablesWithIntrinsicBounds(
+                        R.mipmap.syrup, 0, 0, 0);
+                break;
+            case("Eyedrops"):
+                listItemText.setCompoundDrawablesWithIntrinsicBounds(
+                        R.mipmap.eyedrops, 0, 0, 0);
+                break;
+            case("Injection"):
+                listItemText.setCompoundDrawablesWithIntrinsicBounds(
+                        R.mipmap.injection, 0, 0, 0);
+                break;
+
+
+
+        }
+
+    }
+    // Filter Class
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+        System.out.println("counter:"+counter);
+
+        if(counter==0) {
+            copyList.clear();
+            copyList.addAll(list);
+        }
+
+        list.clear();
+
+
+        if (charText.length() == 0) {
+            list.addAll(copyList);
+            counter=0;
+
+
+        }
+        else
+        {
+
+            for (Prescription p : copyList)
+            {
+                if (p.getPrescriptionName().toLowerCase(Locale.getDefault()).contains(charText)||
+                        p.getPrescriptionType().toLowerCase(Locale.getDefault()).contains(charText) )
+                {
+                    list.add(p);
+                    counter++;
+                }
+            }
+        }
+        notifyDataSetChanged();
+
+    }
 
     private  class delPrescAsyncTask extends AsyncTask<String, Void, Boolean> {
 

@@ -19,6 +19,11 @@
     <string name="login">Login </string>
     <string name="passwordSignin">password </string>
     <string name="cancelMark">&#x2715; </string>
+    <string name="search">search prescriptions </string>
+    <string name="refreshLog">Refresh Prescription Log </string>
+
+
+
 
 
 
