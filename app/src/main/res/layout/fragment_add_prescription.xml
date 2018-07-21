@@ -139,13 +139,16 @@
     <ListView
         android:id="@+id/TimeDoseList"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:drawSelectorOnTop="false"
+        android:layout_height="176dp"
         android:layout_gravity="bottom"
+        android:drawSelectorOnTop="false"
         android:paddingBottom="2dip"
         android:paddingTop="2dip"
         android:textColor="@android:color/black"
-        android:textSize="7pt" />
+        android:textSize="7pt"
+        tools:layout_editor_absoluteY="391dp" />
+
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/insertPresInDB"
@@ -155,4 +158,5 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@android:drawable/stat_sys_upload_done" />
 
-</android.support.design.widget.CoordinatorLayout>
+
+    </android.support.design.widget.CoordinatorLayout>

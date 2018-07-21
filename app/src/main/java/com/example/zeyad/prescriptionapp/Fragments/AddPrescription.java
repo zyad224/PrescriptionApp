@@ -1,7 +1,11 @@
 package com.example.zeyad.prescriptionapp.Fragments;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -25,16 +29,21 @@ import android.widget.TimePicker;
 import com.example.zeyad.prescriptionapp.Adapters.ListAdapterAddPres;
 import com.example.zeyad.prescriptionapp.Database.AppDatabase;
 import com.example.zeyad.prescriptionapp.Database.DoseTime;
+import com.example.zeyad.prescriptionapp.Database.Notification;
 import com.example.zeyad.prescriptionapp.Database.Prescription;
 import com.example.zeyad.prescriptionapp.Database.User;
 import com.example.zeyad.prescriptionapp.MainActivity;
 import com.example.zeyad.prescriptionapp.R;
+import com.example.zeyad.prescriptionapp.Services.NotificationService;
 import com.example.zeyad.prescriptionapp.SigninActivity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.Inflater;
+
+import static android.content.Context.ALARM_SERVICE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -231,7 +240,7 @@ public class AddPrescription extends Fragment  {
                 }
                 else{
 
-                    Snackbar.make(getActivity().findViewById(android.R.id.content),
+                    Snackbar.make(insertPresInDB,
                             "Please fill the form and add your Time/Doses", Snackbar.LENGTH_LONG).show();
                 }
                // clearGUIElements();
@@ -254,31 +263,31 @@ public class AddPrescription extends Fragment  {
     }
     private void fillMissingFields(){
         if(PrescriptionName.isEmpty()){
-            Snackbar.make(getActivity().findViewById(android.R.id.content),
+            Snackbar.make(insertPresInDB,
                     "Please Add a Prescription Name", Snackbar.LENGTH_LONG).show();
         }
         else if(PrescriptionType.equals("Type")){
-            Snackbar.make(getActivity().findViewById(android.R.id.content),
+            Snackbar.make(insertPresInDB,
                     "Please Choose a Prescription Type", Snackbar.LENGTH_LONG).show();
         }
         else if(NumberOFTakings.isEmpty()){
-            Snackbar.make(getActivity().findViewById(android.R.id.content),
+            Snackbar.make(insertPresInDB,
                     "Please Add the number of Takings", Snackbar.LENGTH_LONG).show();
         }
         else if(DoctorName.isEmpty()){
-            Snackbar.make(getActivity().findViewById(android.R.id.content),
+            Snackbar.make(insertPresInDB,
                     "Please Add a Doctor Name", Snackbar.LENGTH_LONG).show();
         }
         else if(DoctorNumber.isEmpty()){
-            Snackbar.make(getActivity().findViewById(android.R.id.content),
+            Snackbar.make(insertPresInDB,
                     "Please Add a Doctor Number", Snackbar.LENGTH_LONG).show();
         }
         else if(hours==null||minutes==null||am_pm==null){
-            Snackbar.make(getActivity().findViewById(android.R.id.content),
+            Snackbar.make(insertPresInDB,
                     "Please Choose  a Time", Snackbar.LENGTH_LONG).show();
         }
         else if(PrescriptionDose.equals("Dose")){
-            Snackbar.make(getActivity().findViewById(android.R.id.content),
+            Snackbar.make(insertPresInDB,
                     "Please Choose a Dose", Snackbar.LENGTH_LONG).show();
         }
 
@@ -296,13 +305,13 @@ public class AddPrescription extends Fragment  {
             arrayList.add(newPres);
             ListTimeDoseAdapter.updateList();
             maximumSizeOfTimeDoseList--;
-            Snackbar.make(getActivity().findViewById(android.R.id.content),
+            Snackbar.make(insertPresInDB,
                     "You Added a new Time/Dosage", Snackbar.LENGTH_LONG).show();
             Log.d("maxA", "list max: "+maximumSizeOfTimeDoseList);
 
         }
         else{
-            Snackbar.make(getActivity().findViewById(android.R.id.content),
+            Snackbar.make(insertPresInDB,
                     "You cant add more, The List is full (remove from list or submit)", Snackbar.LENGTH_LONG).show();
         }
     }
@@ -471,9 +480,9 @@ public class AddPrescription extends Fragment  {
                 DoseTime prescriptionTime = new DoseTime(dosetime1, dosetime2, dosetime3, dosetime4, dosetime5, prescName, username);
                 db.dosetimeDao().insertPrescriptionTime(prescriptionTime);
 
-                List<Prescription> temp= db.prescriptionDao().getUserPrescription(username);
-                List<DoseTime> temp2=db.dosetimeDao().getPrescriptionDoseTime(prescName,username);
 
+                Notification n=new Notification(prescriptionTime,getActivity().getApplicationContext());
+               // setNotification();
 
                 return true;
             }catch (Exception e){
@@ -484,6 +493,8 @@ public class AddPrescription extends Fragment  {
             return false;
         }
 
+
+
         @Override
         protected void onPostExecute(Boolean insertingResult) {
 
@@ -491,11 +502,11 @@ public class AddPrescription extends Fragment  {
             insertPresInDB.setEnabled(true);
 
             if(insertingResult) {
-                Snackbar.make(getActivity().findViewById(android.R.id.content),
+                Snackbar.make(insertPresInDB,
                         "You added a new Prescription!", Snackbar.LENGTH_LONG).show();
             }
             else{
-                Snackbar.make(getActivity().findViewById(android.R.id.content),
+                Snackbar.make(insertPresInDB,
                         "Cant add the Prescription", Snackbar.LENGTH_LONG).show();
 
             }
@@ -536,6 +547,10 @@ public class AddPrescription extends Fragment  {
         clearGUIElements();
 
     }
+
+
+
+
 
 
 }

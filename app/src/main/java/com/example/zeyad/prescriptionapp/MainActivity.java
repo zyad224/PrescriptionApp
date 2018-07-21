@@ -1,6 +1,7 @@
 package com.example.zeyad.prescriptionapp;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public static User signedInUser;
+    public static final String prefs_name="MyPrefs";
+    public static SharedPreferences pref;
     private SwipeRefreshLayout SwipeRefreshLayout;
 
 
@@ -52,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+        pref = getApplicationContext().getSharedPreferences("MyPrefs", MODE_PRIVATE);
         tabs=(TabLayout) findViewById(R.id.tabs);
         pager=(ViewPager) findViewById(R.id.viewPager);
         pagerAdapter=new ViewPagerAdapter(getSupportFragmentManager());
@@ -124,9 +129,9 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
