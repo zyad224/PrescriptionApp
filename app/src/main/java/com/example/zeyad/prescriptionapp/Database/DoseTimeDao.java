@@ -22,4 +22,10 @@ public interface DoseTimeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPrescriptionTime(DoseTime t);
+
+    @Query ("UPDATE DoseTime SET dose_time1_eventid =:notiID1, dose_time2_eventid =:notiID2, " +
+            "dose_time3_eventid =:notiID3,dose_time4_eventid =:notiID4, dose_time5_eventid =:notiID5 " +
+            "WHERE user LIKE :username AND prescription LIKE :prescription ")
+    void insertDoseNotificationIDs(int notiID1, int notiID2,int notiID3, int notiID4,int notiID5, String prescription, String username);
+
 }

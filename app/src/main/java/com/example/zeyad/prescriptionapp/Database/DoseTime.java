@@ -29,14 +29,29 @@ public class DoseTime {
 
     @ColumnInfo(name="dose_time1")
     public String doseTime1;
+    @ColumnInfo(name="dose_time1_eventid")
+    public int doseTime1EventID;
+
     @ColumnInfo(name="dose_time2")
     public String doseTime2;
+    @ColumnInfo(name="dose_time2_eventid")
+    public int doseTime2EventID;
+
     @ColumnInfo(name="dose_time3")
     public String doseTime3;
+    @ColumnInfo(name="dose_time3_eventid")
+    public int doseTime3EventID;
+
     @ColumnInfo(name="dose_time4")
     public String doseTime4;
+    @ColumnInfo(name="dose_time4_eventid")
+    public int doseTime4EventID;
+
     @ColumnInfo(name="dose_time5")
     public String doseTime5;
+    @ColumnInfo(name="dose_time5_eventid")
+    public int doseTime5EventID;
+
     @ColumnInfo(name="prescription")
     public String prescription;
     @ColumnInfo(name="user")
@@ -60,6 +75,11 @@ public class DoseTime {
     public String getDoseTime5(){return this.doseTime5;}
     public String getPrescription_name(){return this.prescription;}
     public String getUser(){return this.user;}
+    public int getDoseTime1EventID(){return this.doseTime1EventID;}
+    public int getDoseTime2EventID(){return this.doseTime2EventID;}
+    public int getDoseTime3EventID(){return this.doseTime3EventID;}
+    public int getDoseTime4EventID(){return this.doseTime4EventID;}
+    public int getDoseTime5EventID(){return this.doseTime5EventID;}
 
 
 

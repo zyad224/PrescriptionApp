@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.zeyad.prescriptionapp.Database.AppDatabase;
+import com.example.zeyad.prescriptionapp.Database.Notification;
 import com.example.zeyad.prescriptionapp.Database.Prescription;
 import com.example.zeyad.prescriptionapp.Database.User;
 import com.example.zeyad.prescriptionapp.Fragments.PrescriptionLog;
@@ -171,11 +172,14 @@ public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
            // System.out.println("del:"+list.get(pos).getPrescriptionName());
 
             try {
+
+                Notification.cancelNotification(db.dosetimeDao().getPrescriptionDoseTime(pName,u.getUserName()).get(0));
                 db.prescriptionDao().deletePrescription(pName,u.getUserName());
                 list.clear();
-//                notifyDataSetChanged();
                 list.addAll(db.prescriptionDao().getUserPrescription(u.getUserName()));
                 notifyDataSetChanged();
+
+
 
                 return true;
             }catch(Exception e){

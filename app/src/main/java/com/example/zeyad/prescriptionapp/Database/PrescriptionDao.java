@@ -24,6 +24,7 @@ public interface PrescriptionDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPrescription(Prescription p);
+
     @Query ("Delete From Prescription WHERE user_id LIKE :username AND prescription_name LIKE :pname ")
     void deletePrescription(String pname, String username);
 }

@@ -15,7 +15,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class NotificationIDGenerator {
 
 
-    private final static AtomicInteger c = new AtomicInteger(MainActivity.pref.getInt("id",0));  // you start somewhere
+    private final static AtomicInteger c = new AtomicInteger(MainActivity.pref.getInt("id",1));  // you start somewhere
     public static int getID() {
         SharedPreferences.Editor editor = MainActivity.pref.edit();
         int newNotificationId=c.incrementAndGet();

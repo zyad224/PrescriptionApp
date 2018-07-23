@@ -482,7 +482,6 @@ public class AddPrescription extends Fragment  {
 
 
                 Notification n=new Notification(prescriptionTime,getActivity().getApplicationContext());
-               // setNotification();
 
                 return true;
             }catch (Exception e){
