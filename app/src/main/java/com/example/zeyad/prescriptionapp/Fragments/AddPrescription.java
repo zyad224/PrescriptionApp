@@ -481,7 +481,8 @@ public class AddPrescription extends Fragment  {
                 db.dosetimeDao().insertPrescriptionTime(prescriptionTime);
 
 
-                Notification n=new Notification(prescriptionTime,getActivity().getApplicationContext());
+
+                Notification n=new Notification(prescriptionTime,newPrescription,getActivity().getApplicationContext());
 
                 return true;
             }catch (Exception e){

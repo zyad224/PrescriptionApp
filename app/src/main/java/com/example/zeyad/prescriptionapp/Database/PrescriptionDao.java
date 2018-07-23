@@ -22,6 +22,9 @@ public interface PrescriptionDao {
     @Query("SELECT * FROM Prescription WHERE user_id LIKE :username")
     public List<Prescription> getUserPrescription (String username);
 
+    @Query("SELECT * FROM Prescription WHERE user_id LIKE :username AND prescription_name LIKE :pname ")
+    public Prescription getSpecificPrescription (String pname,String username);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPrescription(Prescription p);
 

@@ -37,11 +37,13 @@ public class NotificationService extends BroadcastReceiver {
         Log.d("0","in service");
 
 
-        String prescriptionName = intent.getExtras().getString("prescription name");
-        String prescriptionUser = intent.getExtras().getString("user");
+        String prescriptionName = intent.getExtras().getString("pname");
+        String prescriptionType = intent.getExtras().getString("ptype");
+        String prescriptionDose = intent.getExtras().getString("pdose");
+        String prescriptionUser = intent.getExtras().getString("puser");
 
-        System.out.println(prescriptionName);
-        System.out.println(prescriptionUser);
+
+
 
 
 
@@ -60,6 +62,8 @@ public class NotificationService extends BroadcastReceiver {
         }
 
         Intent repeatingintent = new Intent(context, SigninActivity.class);
+        repeatingintent.putExtra("pname",prescriptionName);
+        repeatingintent.putExtra("puser",prescriptionUser);
         repeatingintent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent intentToStart = PendingIntent.getActivity(context, NOTIFICATION_ID, repeatingintent, FLAG_UPDATE_CURRENT);
 
@@ -68,8 +72,8 @@ public class NotificationService extends BroadcastReceiver {
                 .setVibrate(new long[]{0, 100, 100, 100, 100, 100})
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setSmallIcon(R.drawable.notification_icon)
-                .setContentTitle("Take your Prescription"+ " "+ prescriptionUser)
-                .setContentText(prescriptionName)
+                .setContentTitle("Take your Prescription"+ ","+ prescriptionUser)
+                .setContentText(prescriptionName +"-" + prescriptionType+ " , " + prescriptionDose + " Dose")
                 .addAction(R.mipmap.pills,"Take Prescription",intentToStart)
                 .setAutoCancel(true);
 

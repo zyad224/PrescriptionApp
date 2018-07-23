@@ -28,20 +28,22 @@ public class Notification {
     private int maximumDose=5;
     private AlarmManager alarmManager;
     private DoseTime prescriptionTime;
-    private static Context ctx;
+    private Prescription prescription;
+    private  static Context ctx;
     private PendingIntent pending;
     private String [] doseTimings =new String [maximumDose];
     private ArrayList<Integer> doseNotificationId=new ArrayList<Integer>();
+    private Prescription prescriptionToShowInNotfi;
 
 
 
 
 
 
-    public Notification(DoseTime prescriptionTime, Context ctx){
+    public Notification(DoseTime prescriptionTime,Prescription prescription, Context ctx){
 
+        this.prescription=prescription;
         this.prescriptionTime=prescriptionTime;
-
         this.ctx=ctx;
 
         doseTimings[0]=this.prescriptionTime.getDoseTime1();
@@ -55,21 +57,18 @@ public class Notification {
     }
 
     private void generateNotification(){
-        Intent intent= new Intent (this.ctx, NotificationService.class);
+         Intent intent= new Intent (this.ctx, NotificationService.class);
 
+         intent.putExtra("pname",this.prescription.getPrescriptionName());
+         intent.putExtra("ptype", this.prescription.getPrescriptionType());
+         intent.putExtra("pdose",Integer.toString(this.prescription.getPrescriptionDoese()));
+         intent.putExtra("puser",this.prescription.getUser_id());
 
+         alarmManager= (AlarmManager)ctx.getSystemService(ALARM_SERVICE);
 
-        intent.putExtra("prescription name",this.prescriptionTime.getPrescription_name());
-        intent.putExtra("user",this.prescriptionTime.getUser());
+         generateNotificationIDs(intent);
 
-
-        alarmManager= (AlarmManager)ctx.getSystemService(ALARM_SERVICE);
-
-
-
-        generateNotificationIDs(intent);
-
-        new saveDoseNotificationIDs().execute();
+         new saveDoseNotificationIDs().execute();
 
 
 
@@ -80,6 +79,8 @@ public class Notification {
 
         for(int i=0;i<doseTimings.length;i++){
             if(!doseTimings[i].isEmpty()){
+
+
                 String Timings[]=doseTimings[i].split(":");
 
 
@@ -98,7 +99,9 @@ public class Notification {
 
 
                 int notificationId= NotificationIDGenerator.getID();
+
                 pending = PendingIntent.getBroadcast(this.ctx,notificationId,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
                 doseNotificationId.add(notificationId);
 
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),AlarmManager.INTERVAL_DAY,pending);
@@ -194,6 +197,10 @@ public class Notification {
 
 
     }
+
+
+
+
 
 
 

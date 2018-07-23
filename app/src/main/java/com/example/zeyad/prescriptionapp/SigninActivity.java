@@ -158,9 +158,21 @@ public class SigninActivity extends AppCompatActivity {
                         "No User Found/No such credentials, Please Sign Up!", Snackbar.LENGTH_LONG).show();
             }
             else{
-                Intent intent = new Intent( getApplicationContext(),MainActivity.class);
-                intent.putExtra("user", u);
-                startActivity(intent);
+                Intent intentFromNotification = getIntent();
+                String precriptionName="";
+                String prescriptionUser="";
+                if(intentFromNotification!=null) {
+                    precriptionName = intentFromNotification.getStringExtra("pname");
+                    prescriptionUser = intentFromNotification.getStringExtra("puser");
+                }
+
+
+
+                Intent intentToMainActivity = new Intent( getApplicationContext(),MainActivity.class);
+                intentToMainActivity.putExtra("user", u);
+                intentToMainActivity.putExtra("prescriptionTaken", precriptionName);
+
+                startActivity(intentToMainActivity);
             }
 
 

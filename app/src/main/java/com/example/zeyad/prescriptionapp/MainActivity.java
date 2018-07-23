@@ -108,6 +108,9 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         signedInUser=(User)intent.getSerializableExtra("user");
+        String prescriptionTakenFromNoti=intent.getStringExtra("prescriptionTaken");
+
+        System.out.println("prescription taken main activity:"+ prescriptionTakenFromNoti);
 
 
     }
