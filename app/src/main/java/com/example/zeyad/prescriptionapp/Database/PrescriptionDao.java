@@ -30,4 +30,7 @@ public interface PrescriptionDao {
 
     @Query ("Delete From Prescription WHERE user_id LIKE :username AND prescription_name LIKE :pname ")
     void deletePrescription(String pname, String username);
+
+    @Query ("UPDATE Prescription SET forget_takings =:reducedTakings WHERE user_id LIKE :username AND prescription_name LIKE :pname ")
+    void updatePrescriptionTakings(int reducedTakings, String pname, String username);
 }

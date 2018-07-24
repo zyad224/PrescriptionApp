@@ -74,7 +74,7 @@ public class NotificationService extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.notification_icon)
                 .setContentTitle("Take your Prescription"+ ","+ prescriptionUser)
                 .setContentText(prescriptionName +"-" + prescriptionType+ " , " + prescriptionDose + " Dose")
-                .addAction(R.mipmap.pills,"Take Prescription",intentToStart)
+                .setContentIntent(intentToStart)
                 .setAutoCancel(true);
 
 

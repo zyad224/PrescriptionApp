@@ -169,7 +169,7 @@ public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
             String pName= prescription[0];
             AppDatabase db= SigninActivity.getDB();
             u= MainActivity.signedInUser;
-           // System.out.println("del:"+list.get(pos).getPrescriptionName());
+            System.out.println("del:"+pName);
 
             try {
 

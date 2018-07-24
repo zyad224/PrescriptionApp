@@ -2,6 +2,7 @@ package com.example.zeyad.prescriptionapp;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,6 +18,8 @@ import android.view.MenuItem;
 
 import com.example.zeyad.prescriptionapp.Adapters.ViewPagerAdapter;
 import com.example.zeyad.prescriptionapp.Database.AES;
+import com.example.zeyad.prescriptionapp.Database.AppDatabase;
+import com.example.zeyad.prescriptionapp.Database.Prescription;
 import com.example.zeyad.prescriptionapp.Database.User;
 import com.example.zeyad.prescriptionapp.Fragments.AddPrescription;
 
@@ -106,11 +109,16 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-        Intent intent = getIntent();
-        signedInUser=(User)intent.getSerializableExtra("user");
-        String prescriptionTakenFromNoti=intent.getStringExtra("prescriptionTaken");
+        Intent intentFromSignInActivity = getIntent();
+        signedInUser=(User)intentFromSignInActivity .getSerializableExtra("user");
+        String prescriptionTakenFromNoti=intentFromSignInActivity .getStringExtra("prescriptionTaken");
 
-        System.out.println("prescription taken main activity:"+ prescriptionTakenFromNoti);
+
+
+        if(prescriptionTakenFromNoti!=null) {
+            new reducePrescriptionTakings().execute(prescriptionTakenFromNoti);
+            System.out.println("prescription taken main activity:" + prescriptionTakenFromNoti);
+        }
 
 
     }
@@ -151,4 +159,52 @@ public class MainActivity extends AppCompatActivity {
     public  SwipeRefreshLayout getSwipeRefreshLayout(){
         return this.SwipeRefreshLayout;
     }
+
+
+
+
+    private  class reducePrescriptionTakings extends AsyncTask<String, Void, Boolean> {
+
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+        @Override
+        protected Boolean doInBackground(String... prescriptionDetails) {
+
+            AppDatabase db= SigninActivity.getDB();
+            Prescription prescriptionTakenByUser= db.prescriptionDao().
+                    getSpecificPrescription(prescriptionDetails[0],signedInUser.getUserName());
+
+            System.out.println("before updating:"+ prescriptionTakenByUser.getTakings()+" "+prescriptionTakenByUser.getForgetTakings());
+            int doseToBeReduced= prescriptionTakenByUser.getPrescriptionDoese();
+            int amountOfTakingsLeft= prescriptionTakenByUser.getForgetTakings();
+
+            db.prescriptionDao().updatePrescriptionTakings(amountOfTakingsLeft-doseToBeReduced,
+                    prescriptionTakenByUser.getPrescriptionName(),signedInUser.getUserName());
+
+
+
+            Prescription prescriptionTakenByUser2= db.prescriptionDao().
+                    getSpecificPrescription(prescriptionDetails[0],signedInUser.getUserName());
+
+
+            System.out.println("after updating:"+ prescriptionTakenByUser2.getTakings()+" "+prescriptionTakenByUser2.getForgetTakings());
+
+            return true;
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean insertingResult) {
+
+
+
+        }
+
+
+    }
+
 }
+

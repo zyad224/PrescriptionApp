@@ -464,7 +464,7 @@ public class AddPrescription extends Fragment  {
             String prescName=presc.get(0).getPrescriptionName();
             String prescType=presc.get(0).getPrescriptionType();
             int prescTakings=presc.get(0).getTakings();
-            int forgetTakings=0;
+            int forgetTakings=presc.get(0).getTakings();
             String docName=presc.get(0).getDoctorName();
             String docNum=presc.get(0).getDoctorNumber();
             int dose=presc.get(0).getPrescriptionDoese();
