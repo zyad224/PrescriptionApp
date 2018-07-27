@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.example.zeyad.prescriptionapp.MainActivity;
@@ -24,7 +25,7 @@ public class Home extends Fragment {
 
     private View view;
     private TextView greetings;
-    private ListView upcomingPrescriptions;
+    private ListView upcomingPrescriptionsList;
     private BarChart chart;
     public Home() {
         // Required empty public constructor
@@ -41,6 +42,7 @@ public class Home extends Fragment {
 
         homeGUI(view);
         greetUser();
+        setUpcomingPrescriptionList();
 
         return view;
     }
@@ -63,11 +65,19 @@ public class Home extends Fragment {
 
         greetings=(TextView) view.findViewById(R.id.Greetings);
         chart = (BarChart) view.findViewById(R.id.chart);
-        upcomingPrescriptions=view.findViewById(R.id.upcomingPrescriptions);
+        upcomingPrescriptionsList=view.findViewById(R.id.upcomingPrescriptions);
+
+
 
 
     }
 
+    private void setUpcomingPrescriptionList(){
+        ArrayAdapter adapter = new ArrayAdapter<String>(this.getContext(),
+                android.R.layout.simple_list_item_1, MainActivity.upcomingPrescription);
+        upcomingPrescriptionsList.setAdapter(adapter);
+
+    }
     private void greetUser(){
 
         Calendar c= Calendar.getInstance();
