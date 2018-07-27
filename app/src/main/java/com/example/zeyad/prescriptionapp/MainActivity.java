@@ -25,6 +25,7 @@ import com.example.zeyad.prescriptionapp.Database.DoseTime;
 import com.example.zeyad.prescriptionapp.Database.Prescription;
 import com.example.zeyad.prescriptionapp.Database.User;
 import com.example.zeyad.prescriptionapp.Fragments.AddPrescription;
+import com.github.mikephil.charting.data.PieEntry;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String prefs_name="MyPrefs";
     public static SharedPreferences pref;
     public static ArrayList<String> upcomingPrescription;
+    public static List<PieEntry> chartEntries;
     private SwipeRefreshLayout SwipeRefreshLayout;
 
 
@@ -120,11 +122,17 @@ public class MainActivity extends AppCompatActivity {
 
         userTakePrescription();
         userUpcomingPrescriptions();
+        userPrescriptionPieChart();
 
     }
 
 
 
+    private void userPrescriptionPieChart(){
+        chartEntries=new ArrayList<>();
+        new calculateUserPrescriptionTakingsPercentage().execute();
+
+    }
     private void userUpcomingPrescriptions(){
 
 
@@ -201,8 +209,10 @@ public class MainActivity extends AppCompatActivity {
             long seconds=  (doseTime.getTimeInMillis()-timeNow.getTimeInMillis())/1000;
             int hours= (int) seconds/3600;
 
-            if(hours<=2) {
-                System.out.println("hours in="+ hours);
+            System.out.println("hours in="+ hours);
+
+            if(hours<=2&&hours>=0) {
+                //System.out.println("hours in="+ hours);
 
                 return true;
             }
@@ -220,13 +230,14 @@ public class MainActivity extends AppCompatActivity {
             AppDatabase db= SigninActivity.getDB();
             int maximiumDoses=5;
             prescriptionsDoseTimes=db.dosetimeDao().getAllDoseTimes(MainActivity.signedInUser.getUserName());
-
+            upcomingPrescription.clear();
             for(DoseTime t: prescriptionsDoseTimes){
                 doseTimings[maximiumDoses-5]=t.getDoseTime1();
                 doseTimings[maximiumDoses-4]=t.getDoseTime2();
                 doseTimings[maximiumDoses-3]=t.getDoseTime3();
                 doseTimings[maximiumDoses-2]=t.getDoseTime4();
                 doseTimings[maximiumDoses-1]= t.getDoseTime5();
+
 
 
 
@@ -248,9 +259,14 @@ public class MainActivity extends AppCompatActivity {
                            System.out.println(str);
 //                           upcomingPres.add(t.getPrescription_name());
 //                           upcomingPresDose.add(str);
-                           upcomingPrescription.add(t.getPrescription_name()+" - "+ str);
+                           Prescription p=db.prescriptionDao().getSpecificPrescription
+                                   (t.getPrescription_name(),MainActivity.signedInUser.getUserName());
+
+                           upcomingPrescription.add(p.getPrescriptionName()+" - "+ p.getPrescriptionType()+ " - "+
+                                   p.getPrescriptionDoese()+"Dose"+" - "+str);
 
                        }
+
 
 
 
@@ -280,9 +296,10 @@ public class MainActivity extends AppCompatActivity {
     private  class reducePrescriptionTakings extends AsyncTask<String, Void, Boolean> {
 
         Prescription prescriptionTakenByUser=null;
-        int doseToBeReduced=0;
-        int amountOfTakingsLeft;
-        int totalPrescriptionTakings=0;
+        int doseToBeTaken=0;
+        int takingsBeforeDose=0;
+        int takingsAfterDose=0;
+        int initialPrescriptionTakings=0;
 
         @Override
         protected void onPreExecute() {
@@ -295,12 +312,15 @@ public class MainActivity extends AppCompatActivity {
             prescriptionTakenByUser= db.prescriptionDao().
                     getSpecificPrescription(prescriptionDetails[0],signedInUser.getUserName());
 
-            //System.out.println("before updating:"+ prescriptionTakenByUser.getTakings()+" "+prescriptionTakenByUser.getForgetTakings());
-            doseToBeReduced= prescriptionTakenByUser.getPrescriptionDoese();
-            amountOfTakingsLeft= prescriptionTakenByUser.getForgetTakings();
-            totalPrescriptionTakings= amountOfTakingsLeft-doseToBeReduced;
-            db.prescriptionDao().updatePrescriptionTakings(totalPrescriptionTakings,
-                    prescriptionTakenByUser.getPrescriptionName(),signedInUser.getUserName());
+            initialPrescriptionTakings=prescriptionTakenByUser.getTakings();
+            doseToBeTaken= prescriptionTakenByUser.getPrescriptionDoese();
+            takingsBeforeDose= prescriptionTakenByUser.getForgetTakings();
+            takingsAfterDose= takingsBeforeDose+doseToBeTaken;
+
+            if(takingsAfterDose<=initialPrescriptionTakings) {
+                db.prescriptionDao().updatePrescriptionTakings(takingsAfterDose,
+                        prescriptionTakenByUser.getPrescriptionName(), signedInUser.getUserName());
+            }
 
 
 
@@ -314,8 +334,8 @@ public class MainActivity extends AppCompatActivity {
             if(insertingResult) {
                 AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
                 adb.setTitle("Prescription Taken");
-                adb.setMessage(" You have taken:" + doseToBeReduced+ " "+ "Doses from"+" "+prescriptionTakenByUser.getPrescriptionName()
-                +"."+ " You have:"+ totalPrescriptionTakings+" "+"Doses left !!!");
+                adb.setMessage(" You have taken:" + doseToBeTaken+ " "+ "Doses from"+" "+prescriptionTakenByUser.getPrescriptionName()
+                +"."+ " You have:"+ Integer.toString(initialPrescriptionTakings-takingsAfterDose)+" "+"Doses left !!!");
 
                 adb.setNegativeButton("Ok", null);
                 adb.show();
@@ -326,6 +346,46 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    private  class calculateUserPrescriptionTakingsPercentage extends AsyncTask<Void, Void, Boolean> {
+
+
+        @Override
+        protected void onPreExecute() {
+
+        }
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+
+            AppDatabase db= SigninActivity.getDB();
+            List<Prescription> pres=db.prescriptionDao().getUserPrescription(MainActivity.signedInUser.getUserName());
+
+            for(Prescription p:pres){
+                int initialPrescriptionTakings=p.getTakings();
+                int takingsUntilNow=p.getForgetTakings();
+                float percentageOfTakings=((float)takingsUntilNow/(float)initialPrescriptionTakings)*100;
+                chartEntries.add(new PieEntry(percentageOfTakings,p.getPrescriptionName()));
+            }
+
+
+
+            return true;
+        }
+
+
+        @Override
+        protected void onPostExecute(Boolean insertingResult) {
+
+
+
+
+        }
+
+
+    }
+
+
 
 }
 

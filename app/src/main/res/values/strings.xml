@@ -22,12 +22,12 @@
     <string name="search">search prescriptions </string>
     <string name="refreshLog">Refresh Prescription Log </string>
 
+    <string name="upcomingPrescriptions">Upcoming Prescriptions &#x1F60A; </string>
 
 
 
 
 
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

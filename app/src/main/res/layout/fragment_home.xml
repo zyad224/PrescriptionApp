@@ -10,12 +10,20 @@
         android:id="@+id/Greetings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingBottom="4dip"
     />
 
+    <TextView
+        android:id="@+id/PrescriptionViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/upcomingPrescriptions"
+        android:textSize="10pt">
+    </TextView>
     <ListView
         android:id="@+id/upcomingPrescriptions"
         android:layout_width="match_parent"
-        android:layout_height="200dip"
+        android:layout_height="170dip"
         android:drawSelectorOnTop="false"
         android:layout_gravity="bottom"
         android:paddingBottom="2dip"
@@ -23,9 +31,9 @@
         android:textColor="@android:color/black"
         android:textSize="7pt" />
 
-    <com.github.mikephil.charting.charts.BarChart
+    <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="273dp" />
 
 </LinearLayout>

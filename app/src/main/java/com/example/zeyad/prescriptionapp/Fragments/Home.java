@@ -13,11 +13,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import com.example.zeyad.prescriptionapp.MainActivity;
 import com.example.zeyad.prescriptionapp.R;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
 
 import java.util.Calendar;
-//import com.jjoe64.graphview.GraphView;
 
 
 public class Home extends Fragment {
@@ -26,7 +26,7 @@ public class Home extends Fragment {
     private View view;
     private TextView greetings;
     private ListView upcomingPrescriptionsList;
-    private BarChart chart;
+    private PieChart chart;
     public Home() {
         // Required empty public constructor
 
@@ -43,6 +43,7 @@ public class Home extends Fragment {
         homeGUI(view);
         greetUser();
         setUpcomingPrescriptionList();
+        setPrescriptionChart();
 
         return view;
     }
@@ -64,7 +65,7 @@ public class Home extends Fragment {
     private void homeGUI(View view){
 
         greetings=(TextView) view.findViewById(R.id.Greetings);
-        chart = (BarChart) view.findViewById(R.id.chart);
+        chart = (PieChart) view.findViewById(R.id.chart);
         upcomingPrescriptionsList=view.findViewById(R.id.upcomingPrescriptions);
 
 
@@ -78,6 +79,27 @@ public class Home extends Fragment {
         upcomingPrescriptionsList.setAdapter(adapter);
 
     }
+
+    private void setPrescriptionChart(){
+        PieDataSet set = new PieDataSet(MainActivity.chartEntries, "Prescriptions Takings %");
+        PieData data = new PieData(set);
+        chart.setData(data);
+        chart.setNoDataText("No Data Available, Add a prescription");
+        chart.setHovered(true);
+        chart.setDrawEntryLabels(true);
+        chart.setDrawHoleEnabled(true);
+        chart.setDrawSlicesUnderHole(true);
+        chart.setHoleColor(Color.RED);
+        chart.setBackgroundColor(Color.BLACK);
+        chart.setEntryLabelTextSize(12);
+        chart.setEntryLabelColor(Color.RED);
+        chart.setCameraDistance(12);
+        chart.setFocusable(true);
+        chart.setMotionEventSplittingEnabled(true);
+        chart.invalidate();
+
+    }
+
     private void greetUser(){
 
         Calendar c= Calendar.getInstance();
