@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -109,6 +110,15 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
+
+        userTakePrescription();
+
+
+    }
+
+
+    private void userTakePrescription(){
+
         Intent intentFromSignInActivity = getIntent();
         signedInUser=(User)intentFromSignInActivity .getSerializableExtra("user");
         String prescriptionTakenFromNoti=intentFromSignInActivity .getStringExtra("prescriptionTaken");
@@ -118,12 +128,11 @@ public class MainActivity extends AppCompatActivity {
         if(prescriptionTakenFromNoti!=null) {
             new reducePrescriptionTakings().execute(prescriptionTakenFromNoti);
             System.out.println("prescription taken main activity:" + prescriptionTakenFromNoti);
+
+
         }
 
-
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -165,6 +174,10 @@ public class MainActivity extends AppCompatActivity {
 
     private  class reducePrescriptionTakings extends AsyncTask<String, Void, Boolean> {
 
+        Prescription prescriptionTakenByUser=null;
+        int doseToBeReduced=0;
+        int amountOfTakingsLeft;
+        int totalPrescriptionTakings=0;
 
         @Override
         protected void onPreExecute() {
@@ -174,23 +187,17 @@ public class MainActivity extends AppCompatActivity {
         protected Boolean doInBackground(String... prescriptionDetails) {
 
             AppDatabase db= SigninActivity.getDB();
-            Prescription prescriptionTakenByUser= db.prescriptionDao().
+            prescriptionTakenByUser= db.prescriptionDao().
                     getSpecificPrescription(prescriptionDetails[0],signedInUser.getUserName());
 
-            System.out.println("before updating:"+ prescriptionTakenByUser.getTakings()+" "+prescriptionTakenByUser.getForgetTakings());
-            int doseToBeReduced= prescriptionTakenByUser.getPrescriptionDoese();
-            int amountOfTakingsLeft= prescriptionTakenByUser.getForgetTakings();
-
-            db.prescriptionDao().updatePrescriptionTakings(amountOfTakingsLeft-doseToBeReduced,
+            //System.out.println("before updating:"+ prescriptionTakenByUser.getTakings()+" "+prescriptionTakenByUser.getForgetTakings());
+            doseToBeReduced= prescriptionTakenByUser.getPrescriptionDoese();
+            amountOfTakingsLeft= prescriptionTakenByUser.getForgetTakings();
+            totalPrescriptionTakings= amountOfTakingsLeft-doseToBeReduced;
+            db.prescriptionDao().updatePrescriptionTakings(totalPrescriptionTakings,
                     prescriptionTakenByUser.getPrescriptionName(),signedInUser.getUserName());
 
 
-
-            Prescription prescriptionTakenByUser2= db.prescriptionDao().
-                    getSpecificPrescription(prescriptionDetails[0],signedInUser.getUserName());
-
-
-            System.out.println("after updating:"+ prescriptionTakenByUser2.getTakings()+" "+prescriptionTakenByUser2.getForgetTakings());
 
             return true;
         }
@@ -199,6 +206,15 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean insertingResult) {
 
+            if(insertingResult) {
+                AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
+                adb.setTitle("Prescription Taken");
+                adb.setMessage(" You have taken:" + doseToBeReduced+ " "+ "Doses from"+" "+prescriptionTakenByUser.getPrescriptionName()
+                +"."+ " You have:"+ totalPrescriptionTakings+" "+"Doses left !!!");
+
+                adb.setNegativeButton("Ok", null);
+                adb.show();
+            }
 
 
         }

@@ -1,7 +1,10 @@
 package com.example.zeyad.prescriptionapp.Adapters;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -15,12 +18,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.zeyad.prescriptionapp.Database.AppDatabase;
+import com.example.zeyad.prescriptionapp.Database.DoseTime;
 import com.example.zeyad.prescriptionapp.Database.Notification;
 import com.example.zeyad.prescriptionapp.Database.Prescription;
 import com.example.zeyad.prescriptionapp.Database.User;
 import com.example.zeyad.prescriptionapp.Fragments.PrescriptionLog;
 import com.example.zeyad.prescriptionapp.MainActivity;
 import com.example.zeyad.prescriptionapp.R;
+import com.example.zeyad.prescriptionapp.Services.NotificationService;
 import com.example.zeyad.prescriptionapp.SigninActivity;
 
 import java.util.ArrayList;
@@ -39,12 +44,14 @@ public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
     private  ArrayList<Prescription>copyList;
     private ProgressDialog progressDialog;
     private Button delete;
+    private Context ctx;
 
     public static int counter=0;
     public ListAdapterPresLog(@NonNull Context context, int resource, List<Prescription> textViewResourceId) {
         super(context, resource, textViewResourceId);
         list=textViewResourceId;
         this.copyList=new ArrayList<Prescription>();
+        ctx=context;
 
     }
 
@@ -173,7 +180,7 @@ public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
 
             try {
 
-                Notification.cancelNotification(db.dosetimeDao().getPrescriptionDoseTime(pName,u.getUserName()).get(0));
+                cancelNotification(db.dosetimeDao().getPrescriptionDoseTime(pName,u.getUserName()).get(0));
                 db.prescriptionDao().deletePrescription(pName,u.getUserName());
                 list.clear();
                 list.addAll(db.prescriptionDao().getUserPrescription(u.getUserName()));
@@ -192,10 +199,46 @@ public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
         @Override
         protected void onPostExecute(Boolean Result) {
 
+            System.out.print(Result);
             progressDialog.dismiss();
             delete.setEnabled(true);
 
 
+        }
+
+
+    }
+
+
+    private void cancelNotification(DoseTime dt){
+
+        System.out.println("in cancel:");
+
+        Intent intent = new Intent(ctx, NotificationService.class);
+        ArrayList<Integer> cancelledNotificationIds=new ArrayList<Integer>();
+        System.out.println("in cancel:");
+
+        cancelledNotificationIds.add(dt.getDoseTime1EventID());
+        cancelledNotificationIds.add(dt.getDoseTime2EventID());
+        cancelledNotificationIds.add(dt.getDoseTime3EventID());
+        cancelledNotificationIds.add(dt.getDoseTime4EventID());
+        cancelledNotificationIds.add(dt.getDoseTime5EventID());
+
+        AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+
+        System.out.println("in cancel:"+cancelledNotificationIds.size());
+
+
+        for(int i=0;i<cancelledNotificationIds.size();i++) {
+            System.out.println(cancelledNotificationIds.get(i));
+
+
+            if(cancelledNotificationIds.get(i)!=0) {
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, cancelledNotificationIds.get(i), intent, 0);
+                am.cancel(pendingIntent);
+                pendingIntent.cancel();
+                System.out.println("notification cancelled no:"+ cancelledNotificationIds.get(i));
+            }
         }
 
 

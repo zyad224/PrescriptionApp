@@ -183,11 +183,7 @@ public class PrescriptionLog extends Fragment {
         @Override
         protected void onPreExecute() {
 
-//            progressDialog = new ProgressDialog(getContext(),
-//                    R.style.Theme_AppCompat_DayNight_Dialog);
-//            progressDialog.setIndeterminate(true);
-//            progressDialog.setMessage("Fetching your prescriptions...");
-//            progressDialog.show();
+
         }
         @Override
         protected Boolean doInBackground(ArrayList<Prescription>... userPrescriptions) {
@@ -222,15 +218,7 @@ public class PrescriptionLog extends Fragment {
         @Override
         protected void onPostExecute(Boolean Result) {
 
-//            progressDialog.dismiss();
 
-
-//            if(prescriptionsLogs.isEmpty()){
-//               // Loglist.setVisibility(View.GONE);
-//            }
-//            else{
-//                Loglist.setVisibility(View.VISIBLE);
-//            }
                 Snackbar.make(getActivity().findViewById(android.R.id.content),
                         "Prescription Log Updated", Snackbar.LENGTH_LONG).show();
 

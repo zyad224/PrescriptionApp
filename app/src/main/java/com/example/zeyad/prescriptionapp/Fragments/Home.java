@@ -1,111 +1,97 @@
 package com.example.zeyad.prescriptionapp.Fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.ListView;
+import android.widget.TextView;
 import com.example.zeyad.prescriptionapp.MainActivity;
 import com.example.zeyad.prescriptionapp.R;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- *
- * to handle interaction events.
- * Use the {@link Home#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.Calendar;
+//import com.jjoe64.graphview.GraphView;
+
+
 public class Home extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
-    //private OnFragmentInteractionListener mListener;
-
+    private View view;
+    private TextView greetings;
+    private ListView upcomingPrescriptions;
+    private BarChart chart;
     public Home() {
         // Required empty public constructor
 
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment Home.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static Home newInstance(String param1, String param2) {
-        Home fragment = new Home();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        view= inflater.inflate(R.layout.fragment_home, container, false);
+
+        homeGUI(view);
+        greetUser();
+
+        return view;
     }
 
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.onFragmentInteraction(uri);
-//        }
-//    }
-//
-//    @Override
-//    public void onAttach(Context context) {
-//        super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
-//    }
-//
-//    @Override
-//    public void onDetach() {
-//        super.onDetach();
-//        mListener = null;
-//    }
-//
-//    /**
-//     * This interface must be implemented by activities that contain this
-//     * fragment to allow an interaction in this fragment to be communicated
-//     * to the activity and potentially other fragments contained in that
-//     * activity.
-//     * <p>
-//     * See the Android Training lesson <a href=
-//     * "http://developer.android.com/training/basics/fragments/communicating.html"
-//     * >Communicating with Other Fragments</a> for more information.
-//     */
-//    public interface OnFragmentInteractionListener {
-//        // TODO: Update argument type and name
-//        void onFragmentInteraction(Uri uri);
-//    }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser&&view!=null){
+
+          clearGreeting();
+          greetUser();
+
+
+        }
+
+    }
+
+    private void homeGUI(View view){
+
+        greetings=(TextView) view.findViewById(R.id.Greetings);
+        chart = (BarChart) view.findViewById(R.id.chart);
+        upcomingPrescriptions=view.findViewById(R.id.upcomingPrescriptions);
+
+
+    }
+
+    private void greetUser(){
+
+        Calendar c= Calendar.getInstance();
+        int timeOfDay = c.get(Calendar.HOUR_OF_DAY);
+        String greeting=null;
+
+        if(timeOfDay>=1 && timeOfDay<=12){
+            greeting = "Good Morning";
+        } else if(timeOfDay>=12 && timeOfDay<=16){
+            greeting = "Good Afternoon";
+        } else if(timeOfDay>=16 && timeOfDay<=21){
+            greeting = "Good Evening";
+        } else if(timeOfDay>=21 && timeOfDay<=24){
+            greeting = "Good Night";
+        }
+
+        greetings.setTextSize(getResources().getDimension(R.dimen.greeting_size));
+        greetings.setText(greeting +","+ MainActivity.signedInUser.getName());
+
+    }
+
+    private void clearGreeting(){
+        greetings.setText("");
+    }
+
+
 }

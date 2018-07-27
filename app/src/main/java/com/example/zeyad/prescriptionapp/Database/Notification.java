@@ -114,10 +114,11 @@ public class Notification {
 
     public static void cancelNotification(DoseTime dt){
 
-        System.out.println("in cancel");
+        System.out.println("in cancel:");
 
         Intent intent = new Intent(ctx, NotificationService.class);
         ArrayList<Integer> cancelledNotificationIds=new ArrayList<Integer>();
+        System.out.println("in cancel:");
 
         cancelledNotificationIds.add(dt.getDoseTime1EventID());
         cancelledNotificationIds.add(dt.getDoseTime2EventID());
@@ -126,6 +127,8 @@ public class Notification {
         cancelledNotificationIds.add(dt.getDoseTime5EventID());
 
         AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+
+        System.out.println("in cancel:"+cancelledNotificationIds.size());
 
 
         for(int i=0;i<cancelledNotificationIds.size();i++) {
