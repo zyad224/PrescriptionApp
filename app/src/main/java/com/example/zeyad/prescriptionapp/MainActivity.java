@@ -209,10 +209,10 @@ public class MainActivity extends AppCompatActivity {
             long seconds=  (doseTime.getTimeInMillis()-timeNow.getTimeInMillis())/1000;
             int hours= (int) seconds/3600;
 
-            System.out.println("hours in="+ hours);
+            System.out.println("hours out="+ hours);
 
             if(hours<=2&&hours>=0) {
-                //System.out.println("hours in="+ hours);
+                System.out.println("hours in="+ hours);
 
                 return true;
             }

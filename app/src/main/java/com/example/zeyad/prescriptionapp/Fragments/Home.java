@@ -17,6 +17,8 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 
+import org.w3c.dom.Text;
+
 import java.util.Calendar;
 
 
@@ -25,6 +27,7 @@ public class Home extends Fragment {
 
     private View view;
     private TextView greetings;
+    private TextView emptyList;
     private ListView upcomingPrescriptionsList;
     private PieChart chart;
     public Home() {
@@ -65,8 +68,11 @@ public class Home extends Fragment {
     private void homeGUI(View view){
 
         greetings=(TextView) view.findViewById(R.id.Greetings);
+        emptyList=(TextView)view.findViewById(R.id.empty);
         chart = (PieChart) view.findViewById(R.id.chart);
         upcomingPrescriptionsList=view.findViewById(R.id.upcomingPrescriptions);
+
+
 
 
 
@@ -77,6 +83,12 @@ public class Home extends Fragment {
         ArrayAdapter adapter = new ArrayAdapter<String>(this.getContext(),
                 android.R.layout.simple_list_item_1, MainActivity.upcomingPrescription);
         upcomingPrescriptionsList.setAdapter(adapter);
+
+        if(MainActivity.upcomingPrescription.isEmpty()){
+            upcomingPrescriptionsList.setVisibility(View.INVISIBLE);
+            emptyList.setVisibility(View.VISIBLE);
+
+        }
 
     }
 

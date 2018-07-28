@@ -7,8 +7,15 @@
     <item
         android:id="@+id/menue_doctor_list"
         android:icon="@mipmap/pills"
-        android:title="Doctor List"
+        android:title="Doctors"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menue_pharmacy"
+        android:icon="@mipmap/pills"
+        android:title="Pharmacies"
+        app:showAsAction="never" />
+
     <item
         android:id="@+id/menu_refresh_log"
         android:title="@string/refreshLog"

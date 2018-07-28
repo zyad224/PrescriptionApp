@@ -1,3 +1,9 @@
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -20,6 +26,14 @@
         android:text="@string/upcomingPrescriptions"
         android:textSize="10pt">
     </TextView>
+
+    <TextView android:id="@+id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="170dip"
+        android:visibility="gone"
+        android:paddingTop="2dip"
+        android:text="No Prescripitons in the coming 3 hours"/>
+
     <ListView
         android:id="@+id/upcomingPrescriptions"
         android:layout_width="match_parent"
@@ -31,9 +45,11 @@
         android:textColor="@android:color/black"
         android:textSize="7pt" />
 
+
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
         android:layout_height="273dp" />
 
 </LinearLayout>
+</ScrollView>
