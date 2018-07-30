@@ -2,21 +2,17 @@ package com.example.zeyad.prescriptionapp.Database;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.example.zeyad.prescriptionapp.Services.NotificationService;
-import com.example.zeyad.prescriptionapp.SigninActivity;
+import com.example.zeyad.prescriptionapp.Acitvities.SigninActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import static android.content.Context.ALARM_SERVICE;
-import static android.content.Context.SYSTEM_HEALTH_SERVICE;
 
 /**
  * Created by Zeyad on 7/18/2018.

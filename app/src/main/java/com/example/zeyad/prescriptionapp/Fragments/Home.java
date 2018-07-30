@@ -1,8 +1,6 @@
 package com.example.zeyad.prescriptionapp.Fragments;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,13 +9,11 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.example.zeyad.prescriptionapp.MainActivity;
+import com.example.zeyad.prescriptionapp.Acitvities.MainActivity;
 import com.example.zeyad.prescriptionapp.R;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-
-import org.w3c.dom.Text;
 
 import java.util.Calendar;
 

@@ -23,11 +23,7 @@
     <string name="refreshLog">Refresh Prescription Log </string>
 
     <string name="upcomingPrescriptions">Upcoming Prescriptions &#x1F60A; </string>
-
-
-
-
-
+    <string name="title_activity_maps">Map</string>
 
 
 </resources>

@@ -1,9 +1,7 @@
-package com.example.zeyad.prescriptionapp;
+package com.example.zeyad.prescriptionapp.Acitvities;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +18,6 @@ import com.example.zeyad.prescriptionapp.R;
 
 
 import static android.app.PendingIntent.getActivity;
-import static com.example.zeyad.prescriptionapp.SignupActivity.resizeAppIcon;
 
 public class SignupActivity extends AppCompatActivity {
 

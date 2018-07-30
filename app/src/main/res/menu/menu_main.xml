@@ -1,19 +1,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.example.zeyad.prescriptionapp.MainActivity">
+    tools:context="com.example.zeyad.prescriptionapp.Acitvities.MainActivity">
 
 
     <item
-        android:id="@+id/menue_doctor_list"
+        android:id="@+id/menue_doctor"
         android:icon="@mipmap/pills"
-        android:title="Doctors"
+        android:title="Nearby Doctors"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/menue_hospitals"
+        android:icon="@mipmap/pills"
+        android:title="Nearby Hospitals"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/menue_pharmacy"
         android:icon="@mipmap/pills"
-        android:title="Pharmacies"
+        android:title="Nearby Pharmacies"
         app:showAsAction="never" />
 
     <item

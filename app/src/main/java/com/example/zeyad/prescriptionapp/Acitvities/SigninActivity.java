@@ -1,4 +1,4 @@
-package com.example.zeyad.prescriptionapp;
+package com.example.zeyad.prescriptionapp.Acitvities;
 
 import android.app.ProgressDialog;
 import android.arch.persistence.room.Room;
@@ -19,8 +19,9 @@ import android.widget.TextView;
 import com.example.zeyad.prescriptionapp.Database.AES;
 import com.example.zeyad.prescriptionapp.Database.AppDatabase;
 import com.example.zeyad.prescriptionapp.Database.User;
+import com.example.zeyad.prescriptionapp.R;
 
-import static com.example.zeyad.prescriptionapp.SignupActivity.resizeAppIcon;
+import static com.example.zeyad.prescriptionapp.Acitvities.SignupActivity.resizeAppIcon;
 
 public class SigninActivity extends AppCompatActivity {
 

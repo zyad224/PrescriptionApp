@@ -1,12 +1,7 @@
 package com.example.zeyad.prescriptionapp.Fragments;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -21,7 +16,6 @@ import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TimePicker;
@@ -32,18 +26,11 @@ import com.example.zeyad.prescriptionapp.Database.DoseTime;
 import com.example.zeyad.prescriptionapp.Database.Notification;
 import com.example.zeyad.prescriptionapp.Database.Prescription;
 import com.example.zeyad.prescriptionapp.Database.User;
-import com.example.zeyad.prescriptionapp.MainActivity;
+import com.example.zeyad.prescriptionapp.Acitvities.MainActivity;
 import com.example.zeyad.prescriptionapp.R;
-import com.example.zeyad.prescriptionapp.Services.NotificationService;
-import com.example.zeyad.prescriptionapp.SigninActivity;
+import com.example.zeyad.prescriptionapp.Acitvities.SigninActivity;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-import java.util.zip.Inflater;
-
-import static android.content.Context.ALARM_SERVICE;
 
 /**
  * A simple {@link Fragment} subclass.

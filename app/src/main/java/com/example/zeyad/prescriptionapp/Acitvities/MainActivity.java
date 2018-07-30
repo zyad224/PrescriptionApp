@@ -1,11 +1,9 @@
-package com.example.zeyad.prescriptionapp;
+package com.example.zeyad.prescriptionapp.Acitvities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -13,18 +11,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 
 import com.example.zeyad.prescriptionapp.Adapters.ViewPagerAdapter;
-import com.example.zeyad.prescriptionapp.Database.AES;
 import com.example.zeyad.prescriptionapp.Database.AppDatabase;
 import com.example.zeyad.prescriptionapp.Database.DoseTime;
 import com.example.zeyad.prescriptionapp.Database.Prescription;
 import com.example.zeyad.prescriptionapp.Database.User;
-import com.example.zeyad.prescriptionapp.Fragments.AddPrescription;
+import com.example.zeyad.prescriptionapp.R;
 import com.github.mikephil.charting.data.PieEntry;
 
 import java.util.ArrayList;
@@ -170,13 +165,32 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        Intent intent;
 
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
+        switch (id){
+            case (R.id.menue_hospitals):
+                intent=new Intent(this, MapsActivity.class);
+                intent.putExtra("searchKey","hospital");
+                break;
+            case (R.id.menue_doctor):
+                intent=new Intent(this, MapsActivity.class);
+                intent.putExtra("searchKey","doctors");
+                break;
 
-        return super.onOptionsItemSelected(item);
+            case (R.id.menue_pharmacy):
+                intent=new Intent(this, MapsActivity.class);
+                intent.putExtra("searchKey","pharmacy");
+                break;
+
+            default:
+                return super.onOptionsItemSelected(item);
+
+
+        }
+
+        startActivity(intent);
+
+        return true;
     }
 
     private void setTabLayoutIcons(TabLayout tabs){

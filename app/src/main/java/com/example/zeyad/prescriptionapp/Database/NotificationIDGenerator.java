@@ -2,11 +2,9 @@ package com.example.zeyad.prescriptionapp.Database;
 
 import android.content.SharedPreferences;
 
-import com.example.zeyad.prescriptionapp.MainActivity;
+import com.example.zeyad.prescriptionapp.Acitvities.MainActivity;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Zeyad on 7/21/2018.

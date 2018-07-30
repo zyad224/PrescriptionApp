@@ -1,20 +1,14 @@
 package com.example.zeyad.prescriptionapp.Fragments;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,15 +19,12 @@ import com.example.zeyad.prescriptionapp.Adapters.ListAdapterPresLog;
 import com.example.zeyad.prescriptionapp.Database.AppDatabase;
 import com.example.zeyad.prescriptionapp.Database.Prescription;
 import com.example.zeyad.prescriptionapp.Database.User;
-import com.example.zeyad.prescriptionapp.MainActivity;
+import com.example.zeyad.prescriptionapp.Acitvities.MainActivity;
 import com.example.zeyad.prescriptionapp.R;
-import com.example.zeyad.prescriptionapp.SigninActivity;
+import com.example.zeyad.prescriptionapp.Acitvities.SigninActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
-
-import static com.example.zeyad.prescriptionapp.R.color.blue;
 
 
 /**

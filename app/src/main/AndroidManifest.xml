@@ -6,8 +6,12 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SET_ALARM" />
-
-
+    <uses-permission android:name="com.example.zeyad.prescriptionapp.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -16,7 +20,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SigninActivity"
+            android:name=".Acitvities.SigninActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -27,11 +31,31 @@
         </activity>
         <!-- <activity android:name=".SignupActivity"></activity> -->
         <activity
-            android:name=".SignupActivity"
-            android:parentActivityName=".SigninActivity" />
-        <activity android:name=".MainActivity" />
+            android:name=".Acitvities.SignupActivity"
+            android:parentActivityName=".Acitvities.SigninActivity" />
+        <activity android:name=".Acitvities.MainActivity" />
 
-        <receiver android:name=".Services.NotificationService"/>
+        <receiver android:name=".Services.NotificationService" />
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".Acitvities.MapsActivity"
+            android:label="@string/title_activity_maps" />
+
+        <service
+            android:name=".Services.GPSService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>
