@@ -32,52 +32,42 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+
+/**
+ * This is the map activity of the the mobile app.
+ * It initializes the interface of the map activiy .
+ * It enables the gps and get the current location of the user
+ * It uses Google Place Api to get nearby locations from the user
+ * It provide the user by a map of his position and the nearby places they searching for:
+ * 1- Nearby Hospitals.
+ * 2- Nearby Doctors.
+ * 3- Nearby Pharmacies.
+ *
+ */
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private GoogleMap mMap;
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    double latitude;
-    double longitude;
+    private double latitude;
+    private double longitude;
     private int PROXIMITY_RADIUS = 3000;
     private String searchKey="";
-    private BroadcastReceiver broadcastReceiver;
 
-    GoogleApiClient mGoogleApiClient;
-    Location mLastLocation;
-    Marker mCurrLocationMarker;
-    LocationRequest mLocationRequest;
-    Object [] DataToBeProcessed;
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+    private Marker mCurrLocationMarker;
+    private LocationRequest mLocationRequest;
+    private Object [] DataToBeProcessed;
 
 
+/////////////////////////////Map Activity starts here/////////////////////////////////////////////////////
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
-
-
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkLocationPermission();
-        }
-
-      //  Check if Google Play Services Available or not
-        if (!CheckGooglePlayServices()) {
-            Log.d("onCreate", "Finishing test case since Google Play Services are not available");
-            finish();
-        }
-        else {
-            Log.d("onCreate","Google Play Services available.");
-        }
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-
+        mapGUI();
         getSearchKey();
-
-
-
 
     }
 
@@ -85,12 +75,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+/////////////////////////////Map Activity methods//////////////////////////////////////////////////////////
+
+    /**
+     * The method is responsible to set the GUI of the map activity.
+     * It prompt the user to get location permission.
+     * It checks if google play services available or not.
+     *
+     */
+    private void mapGUI(){
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            checkLocationPermission();
+        }
+        //  Check if Google Play Services Available or not
+        if (!CheckGooglePlayServices()) {
+            finish();
+        }
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
     private void getSearchKey(){
 
         Intent intentFromMainActivity = getIntent();
         searchKey=intentFromMainActivity .getStringExtra("searchKey");
 
     }
+
+    /**
+     * The method checks if google play service is available or not
+     * @return
+     */
     private boolean CheckGooglePlayServices() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(this);
@@ -104,6 +121,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return true;
     }
 
+    /**
+     The method promt the user to give location permission to use the GPS
+     **/
     private boolean checkLocationPermission(){
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
@@ -135,8 +155,102 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+    The method builds google api client.
+     **/
+    private synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        mGoogleApiClient.connect();
+    }
+
+    /**
+     *
+     * The method is responsible to:
+     * 1- recieve the latitude and longitude of the user and the search key of places ie: hospital.
+     * 2- it prepares the url of Places Api in order to be executed.
+     * 3- it append to the url the latitude, longitude, searchkey, and radius (5km) to the url
+     * @param lat
+     * @param lng
+     * @param searchKey
+     * @return
+     */
+    private String getSearchNearbyPlacesURL(double lat, double lng, String searchKey){
+        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        googlePlacesUrl.append("location=" + lat + "," + lng);
+        googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
+        googlePlacesUrl.append("&type=" + searchKey);
+        googlePlacesUrl.append("&sensor=true");
+        googlePlacesUrl.append("&key="+"AIzaSyA88PhQ3O1SXIl2fmXUFSZuER_s-2maosg");
+        Log.d("getUrl", googlePlacesUrl.toString());
+        return (googlePlacesUrl.toString());
+    }
+
+    /**
+     * The method is responsible to:
+     * 1- recieve the current location of the user.
+     * 2- mark the location on the map
+     * 3- set the camera to the user location
+     *
+     * The user is marked as Hue Magenta marker
+     * @param location
+     */
+    private void setCurrentLocationOnMap(Location location){
+
+        mLastLocation = location;
+        if (mCurrLocationMarker != null) {
+            mCurrLocationMarker.remove();
+        }
+
+        //Place current location marker
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Current Position");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        mCurrLocationMarker = mMap.addMarker(markerOptions);
+
+        //move map camera
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+
+
+    }
+
+    /**
+     * The method is responsible to:
+     * 1- recieve the place api url from getSearchNearbyPlacesURL
+     * 2- put the map and the url in object array to be processed.
+     * 3- call FindNearby to execute the place api url and draw nearby places
+     */
+    private void startFindingNearbyPlaces(){
+
+        String urlSearch= getSearchNearbyPlacesURL(latitude,longitude, searchKey);
+        DataToBeProcessed=new Object [2];
+        DataToBeProcessed[0]=mMap;
+        DataToBeProcessed[1]=urlSearch;
+        new FindNearby().execute(DataToBeProcessed);
+
+    }
+
+
+
+/////////////////////////GPS and Map fragment override methods///////////////////////////////////////////
 
     @Override
+    /**
+     * The method recieves the response of user regarding using its location.
+     * If permission granted, the gps starts to work and location is enables.
+     * If not , process is aborted.
+     */
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -171,15 +285,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-        mGoogleApiClient.connect();
-    }
 
     /**
      * Manipulates the map once available.
@@ -218,57 +323,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    private String getSearchNearbyPlacesURL(double lat, double lng, String searchKey){
-        StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
-        googlePlacesUrl.append("location=" + lat + "," + lng);
-        googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
-        googlePlacesUrl.append("&type=" + searchKey);
-        googlePlacesUrl.append("&sensor=true");
-        googlePlacesUrl.append("&key="+"AIzaSyA88PhQ3O1SXIl2fmXUFSZuER_s-2maosg");
-        Log.d("getUrl", googlePlacesUrl.toString());
-        return (googlePlacesUrl.toString());
-    }
-
-    private void setCurrentLocationOnMap(Location location){
-
-        mLastLocation = location;
-        if (mCurrLocationMarker != null) {
-            mCurrLocationMarker.remove();
-        }
-
-        //Place current location marker
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.position(latLng);
-        markerOptions.title("Current Position");
-        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-        mCurrLocationMarker = mMap.addMarker(markerOptions);
-
-        //move map camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        Toast.makeText(MapsActivity.this,"Your Current Location", Toast.LENGTH_LONG).show();
-
-
-    }
-
-
-    private void startFindingNearbyPlaces(){
-
-        String urlSearch= getSearchNearbyPlacesURL(latitude,longitude, searchKey);
-        DataToBeProcessed=new Object [2];
-        DataToBeProcessed[0]=mMap;
-        DataToBeProcessed[1]=urlSearch;
-        new FindNearby().execute(DataToBeProcessed);
-
-    }
 
     @Override
+    /**
+     * The method is called when the GPS starts to work and new location is fetched.
+     *
+     * It is responsible to:
+     * 1- create a new location request with high accuracy.
+     * 2-get the last location of the user.
+     * 3- pass the location to setCurrentLocationOnMap to set the new location of the user.
+     * 4- call startFindingNearbyPlaces() to prepare the place api url to find nearby places.
+     *
+     */
     public void onConnected(@Nullable Bundle bundle) {
 
         System.out.print("in onConnected");
@@ -315,88 +381,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-//    @Override
-//    public void onLocationChanged(Location location) {
-//
-//        mLastLocation = location;
-//        if (mCurrLocationMarker != null) {
-//            mCurrLocationMarker.remove();
-//        }
-//
-//        //Place current location marker
-//        latitude = location.getLatitude();
-//        longitude = location.getLongitude();
-//        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-//        MarkerOptions markerOptions = new MarkerOptions();
-//        markerOptions.position(latLng);
-//        markerOptions.title("Current Position");
-//        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-//        mCurrLocationMarker = mMap.addMarker(markerOptions);
-//
-//        //move map camera
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-//        mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-//        Toast.makeText(MapsActivity.this,"Your Current Location", Toast.LENGTH_LONG).show();
-//
-//        Log.d("onLocationChanged", String.format("latitude:%.3f longitude:%.3f",latitude,longitude));
-//
-//        //stop location updates
-////        if (mGoogleApiClient != null) {
-////            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-////            Log.d("onLocationChanged", "Removing Location Updates");
-////        }
-//        Log.d("onLocationChanged", "Exit");
-//    }
-//
-//    @Override
-//    public void onStatusChanged(String provider, int status, Bundle extras) {
-//
-//    }
-//
-//    @Override
-//    public void onProviderEnabled(String provider) {
-//
-//    }
-//
-//    @Override
-//    public void onProviderDisabled(String provider) {
-//
-//    }
 
-
-
-//    protected void onResume(){
-//        super.onResume();
-//        Log.e("f", "onResume: entered after close" );
-//        if(broadcastReceiver == null){
-//            // create a BroadcastReceiver object
-//            broadcastReceiver = new BroadcastReceiver(){
-//
-//                @Override
-//                public void onReceive(Context context, Intent intent) {
-//
-//                    longitude =(double)intent.getExtras().get("Longitude");
-//                    latitude = (double)intent.getExtras().get("Latitude");
-//                    Log.e("long:", "broadcast: "+longitude );
-//                    Log.e("latit:", "broadcast: "+latitude );
-//
-//                    System.out.println("lati + long : "+ latitude +" "+ longitude);
-//                    String urlSearch= getSearchNearbyPlacesURL(latitude,longitude, searchKey);
-//                    DataToBeProcessed=new Object [2];
-//
-//                    //System.out.print("url:"+ urlSearch);
-//                    DataToBeProcessed[0]=mMap;
-//                    DataToBeProcessed[1]=urlSearch;
-//
-//
-//                    new FindNearby().execute(DataToBeProcessed);
-//                }
-//            };
-//        }
-//        // update it
-////        registerReceiver(broadcastReceiver, new IntentFilter("location_update"));
-//
-//    }
 
 
 }

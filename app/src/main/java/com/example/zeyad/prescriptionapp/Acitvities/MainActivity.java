@@ -29,12 +29,14 @@ import java.util.List;
 /**
  * This is the main activity of the the mobile app.
  * It initializes the interface of the app.
+ * It sets the fragments of the app (home, history, new).
+ * It sets the upcoming prescription list,
+ * It sets the prescription takings chart.
+ * It set the pop up menue for the user
+ * It receives prescriptions taken by user from notifiation bar.
+ * It re-calculate the total prescription doses left after the user took the prescription.
+ * It fetches the signed in user.
  *
- * It consists of:
- * Toolbar.
- * TabLayout.
- * ViewPager.
- * ViewPagerAdapter.
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -47,31 +49,57 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.ic_home_icon,
             R.drawable.ic_add_prescription
     };
-
     public static User signedInUser;
     public static final String prefs_name="MyPrefs";
     public static SharedPreferences pref;
     public static ArrayList<String> upcomingPrescription;
     public static List<PieEntry> chartEntries;
-    private SwipeRefreshLayout SwipeRefreshLayout;
 
 
+
+/////////////////////////Main Activity of the App starts here/////////////////////////////////////////////////////////
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mainActivityGUI();
+        userTakePrescription();
+        userUpcomingPrescriptions();
+        userPrescriptionPieChart();
+
+    }
+
+
+
+ ///////////////////////////////Main Activity methods/////////////////////////////////////////////////////////////////
+
+    /**
+     * The method is responsible to set the GUI of the main activity of the app.
+     * It sets:
+     * 1- the toolbar of the app.
+     * 2- the pref which includes an integer(the latest notification id stored in the app).
+     * 3- tablayout.
+     * 4- the view pager for the fragments used in the app.
+     * 5- the names of the different tabs.
+     *
+     */
+    private void mainActivityGUI(){
+
+        // set the app toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
+        // set the app pref, tabs, view pager (for fragments), and pager adapter
         pref = getApplicationContext().getSharedPreferences("MyPrefs", MODE_PRIVATE);
         tabs=(TabLayout) findViewById(R.id.tabs);
         pager=(ViewPager) findViewById(R.id.viewPager);
         pagerAdapter=new ViewPagerAdapter(getSupportFragmentManager());
-        //SwipeRefreshLayout=(SwipeRefreshLayout) findViewById(R.id.swiperefresh);
 
 
-
+        // synchronize the tabs with the view pager
+        // load 2 pages hwne app starts ( setOffscreePageLimit) for performance
         pager.setAdapter(pagerAdapter);
         tabs.setupWithViewPager(pager);
         setTabLayoutIcons(tabs);
@@ -79,10 +107,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        // set tab names when user clicks on a certain tab
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                Log.d("zy:","pos:"+tab.getPosition());
                 pager.setCurrentItem(tab.getPosition());
 
 
@@ -114,20 +142,22 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-
-        userTakePrescription();
-        userUpcomingPrescriptions();
-        userPrescriptionPieChart();
-
     }
 
-
-
+    /**
+     * The method is responsible to set the chart of the prescriptions takings
+     * and prepare the chart to be viewed in the Home Fragment.
+     */
     private void userPrescriptionPieChart(){
         chartEntries=new ArrayList<>();
         new calculateUserPrescriptionTakingsPercentage().execute();
 
     }
+
+    /**
+     * The method is responsible to set the list of the upcoming prescriptions( prescriptions in 3 hours)
+     * and prepare the upcoming list to be viewed in the Home Fragment.
+     */
     private void userUpcomingPrescriptions(){
 
 
@@ -135,6 +165,15 @@ public class MainActivity extends AppCompatActivity {
         new fetchUserUpcomingPrescriptions().execute();
 
     }
+
+    /**
+     * The method is responsible to receive an intent from the sign in activity, get the signed in user,
+     * and get the prescription name if the user clicked on the notification to take the prescription.
+     *
+     * If the user took the prescription (ie clicked on the notification to take it), then the async task
+     * reducePrescriptionTakings is called to reduce the total amount of doses left for that prescription.
+     *
+     */
     private void userTakePrescription(){
 
         Intent intentFromSignInActivity = getIntent();
@@ -152,7 +191,30 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * The method is responsible to set the icons of the tabs for different pages.
+     * Pages:
+     * 1- History.
+     * 2- Home.
+     * 3- New.
+     * @param tabs
+     */
+    private void setTabLayoutIcons(TabLayout tabs){
+
+        tabs.getTabAt(0).setIcon(tabIcons[0]);
+        tabs.getTabAt(1).setIcon(tabIcons[1]);
+        tabs.getTabAt(2).setIcon(tabIcons[2]);
+    }
+
+
+
+
+///////////////////////////////// The pop out menue methods///////////////////////////////////////////////////////////
+
     @Override
+    /**
+     * The method responsible to inflate the menue when user clicks on it.
+     */
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -160,6 +222,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    /**
+     * The method is responsible to fetch the id of the item chosen from the menue.
+     * There are 3 choices:
+     * 1- Nearby Hospitals.
+     * 2- Nearby Doctors.
+     * 3- Nearby Pharmacies.
+     *
+     * When any of the choices above clicked, a new map activity intent starts to show the nearby
+     * { hostpitals, doctors, pharmacies}.
+     *
+     */
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -193,51 +266,52 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void setTabLayoutIcons(TabLayout tabs){
-
-        tabs.getTabAt(0).setIcon(tabIcons[0]);
-        tabs.getTabAt(1).setIcon(tabIcons[1]);
-        tabs.getTabAt(2).setIcon(tabIcons[2]);
-    }
 
 
 
-    public  SwipeRefreshLayout getSwipeRefreshLayout(){
-        return this.SwipeRefreshLayout;
-    }
+//////////////////////////Asycn Tasks that are called when the app is started/////////////////////////////////////////
 
-
-
+    /**
+     * The async task is responsible to:
+     * 1- Fetch all the prescription dose times of the signed in user.
+     * 2- It iterates on all the dose times and creates a calender object for each dose time.
+     * 3- pass the calender object to compareCurrentTimeWDoseTime to compare the dose time with the current time.
+     * 4- If the difference between the current time and the dose time is 3 hours the add that prescription and dose time
+     * to the upcoming prescription list.
+     */
     private  class fetchUserUpcomingPrescriptions extends AsyncTask<Void, Void, Boolean> {
 
         List<DoseTime> prescriptionsDoseTimes=null;
         String [] doseTimings= new String [5];
-        ArrayList<String> upcomingPres=new ArrayList<String>();
-        ArrayList<String> upcomingPresDose=new ArrayList<String>();
 
 
-
+        /**
+         * The method compare between the current time and the dose time.
+         * If the difference between them is 3 hours then add the prescription in the
+         * upcoming prescription list.
+         * @param doseTime
+         * @return
+         */
         private boolean compareCurrentTimeWDoseTime(Calendar doseTime){
 
             Calendar timeNow= Calendar.getInstance();
             long seconds=  (doseTime.getTimeInMillis()-timeNow.getTimeInMillis())/1000;
             int hours= (int) seconds/3600;
 
-            System.out.println("hours out="+ hours);
-
             if(hours<=2&&hours>=0) {
-                System.out.println("hours in="+ hours);
-
                 return true;
             }
 
             return false;
         }
-        @Override
-        protected void onPreExecute() {
 
-        }
         @Override
+        /**
+         * The method iterates on all the prescriptions dose times and pass them to the method
+         * compareCurrentTimeWDoseTime to compare the dosetime with the current time.
+         *
+         * If the difference is 3 hours then add the prescription to the upcoming prescription list.
+         */
         protected Boolean doInBackground(Void... voids) {
 
 
@@ -251,8 +325,6 @@ public class MainActivity extends AppCompatActivity {
                 doseTimings[maximiumDoses-3]=t.getDoseTime3();
                 doseTimings[maximiumDoses-2]=t.getDoseTime4();
                 doseTimings[maximiumDoses-1]= t.getDoseTime5();
-
-
 
 
                for(String str: doseTimings){
@@ -269,10 +341,7 @@ public class MainActivity extends AppCompatActivity {
                            timeOfDose.set(Calendar.AM_PM,Calendar.PM);
 
                        if(compareCurrentTimeWDoseTime(timeOfDose)){
-                           System.out.println(t.getPrescription_name());
-                           System.out.println(str);
-//                           upcomingPres.add(t.getPrescription_name());
-//                           upcomingPresDose.add(str);
+
                            Prescription p=db.prescriptionDao().getSpecificPrescription
                                    (t.getPrescription_name(),MainActivity.signedInUser.getUserName());
 
@@ -296,17 +365,23 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        @Override
-        protected void onPostExecute(Boolean insertingResult) {
-
-
-
-
-        }
-
 
     }
 
+
+    /**
+     *  The async taks is responsible to:
+     *  1- Receive the user and name of the prescription taken by him when the user confirm he took the prescription.
+     *  2- Fetch the prescription from database using the user id and the prescription name.
+     *  3- Fetch the dose to be taken, the total amount of doses of that prescription, the number of dose already taken until now.
+     *  4- It increments the number of doses already taken. for example:
+     *
+     *  if the dose to be taken is 2, the initial amount of doses is 30. if the user took the prescription,
+     *  then the amount of dose already taken is: 0+2, 2+2, 4+2, 6+2, ..... until the inital amount of dose
+     *  and dose already taken is 30 : 30>>> which means the prescription is finished and need refill.
+     *
+     *  5- It show the user the prescription he took and the amount of doses left for that prescription.
+     */
     private  class reducePrescriptionTakings extends AsyncTask<String, Void, Boolean> {
 
         Prescription prescriptionTakenByUser=null;
@@ -315,10 +390,7 @@ public class MainActivity extends AppCompatActivity {
         int takingsAfterDose=0;
         int initialPrescriptionTakings=0;
 
-        @Override
-        protected void onPreExecute() {
 
-        }
         @Override
         protected Boolean doInBackground(String... prescriptionDetails) {
 
@@ -361,13 +433,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     *  The async task is responsible to:
+     *  1- Fetch all the prescriptions of the user signed in to the app.
+     *  2- Iterates on all the prescriptions and calculate the percentage of prescription taking for every prescription.
+     *  3- It does so by calculating percentageOfTakings=((float)takingsUntilNow/(float)initialPrescriptionTakings)*100;
+     *  4- Insert each prescription along with its percentage in the chart
+     */
     private  class calculateUserPrescriptionTakingsPercentage extends AsyncTask<Void, Void, Boolean> {
 
 
-        @Override
-        protected void onPreExecute() {
 
-        }
         @Override
         protected Boolean doInBackground(Void... voids) {
 
@@ -388,13 +464,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        @Override
-        protected void onPostExecute(Boolean insertingResult) {
-
-
-
-
-        }
 
 
     }

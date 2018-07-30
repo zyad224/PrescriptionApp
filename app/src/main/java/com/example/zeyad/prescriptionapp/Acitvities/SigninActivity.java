@@ -21,8 +21,15 @@ import com.example.zeyad.prescriptionapp.Database.AppDatabase;
 import com.example.zeyad.prescriptionapp.Database.User;
 import com.example.zeyad.prescriptionapp.R;
 
-import static com.example.zeyad.prescriptionapp.Acitvities.SignupActivity.resizeAppIcon;
 
+/**
+ * This is the sign in activity of the the mobile app.
+ * It initializes the interface of the sign in activity .
+ * It checks user input username, password, etc.
+ * It directs the user either to the main activity or to the sign up activity.
+ * It initialises the db of the app.
+ *
+ */
 public class SigninActivity extends AppCompatActivity {
 
     private EditText userName;
@@ -36,37 +43,72 @@ public class SigninActivity extends AppCompatActivity {
     public static AppDatabase db;
 
 
+
+
+
+/////////////////////////////SignIn Activity starts here/////////////////////////////////////////////////////////
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
 
+        signinGUI();
+
+    }
+
+
+
+
+
+/////////////////////////////////SignIn Activity methods/////////////////////////////////////////////////////////////////
+
+    /**
+     *
+     * The method is responsible to set the GUI of the sign in activity of the app.
+     * It sets:
+     * 1- the username edit text.
+     * 2- the password edit text.
+     * 3- the login button.
+     * 4- the create account textview ( the way to login activity).
+     * 5- the icon of the app.
+     * 6- it initialises the db object.
+     * 7- set click listeners on the login button and the create account text view.
+     * 8- checks if the credentials of the user is stored in the db or not ( username password).
+     *
+     */
+    private void signinGUI(){
+
+
+        // set different attributes
         userName=(EditText) findViewById(R.id.input_username_signin);
         password=(EditText) findViewById(R.id.input_password_signin);
         login=(Button) findViewById(R.id.login);
         tv=(TextView) findViewById(R.id.signup_link);
         img=(ImageView) findViewById(R.id.appLogo);
 
+        //set the color of the login button and size of app icon
         int red= Color.rgb(196,3,3);
         login.setBackgroundColor(red);
         login.setTextColor(Color.WHITE);
         resizeAppIcon(img);
 
-        // control of database
+        // set the db object.
         if (db==null) {
             db = Room.databaseBuilder(getApplicationContext(),
                     AppDatabase.class, "app_db2")
                     .fallbackToDestructiveMigration()
                     .build();
-            Log.d("db", "onCreate: db");
         }
 
+
+        // set click listener on login button
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                // checks username and password
                 if(validateUserinput()){
-                    //async task
                     String[] credentials =new String [2] ;
                     credentials[0]=UserName;
                     credentials[1]=Password;
@@ -76,20 +118,25 @@ public class SigninActivity extends AppCompatActivity {
             }
         });
 
+        // set click listener on create account text view
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                // go to the sigup activity
                 Intent intent = new Intent( getApplicationContext(),SignupActivity.class);
                 startActivity(intent);
             }
         });
 
-
     }
 
 
-
+    /**
+     * The method checks if the user has entered his username and password or not.
+     * If the user forgets to enter any of them, this method notifies the user to re-enter their credentials.
+     * @return
+     */
     private boolean validateUserinput(){
         UserName=userName.getText().toString();
         Password=password.getText().toString();
@@ -110,14 +157,59 @@ public class SigninActivity extends AppCompatActivity {
         return false;
     }
 
+    /**
+     * The method is responsible to resize the app icon 400x400 pixels
+     * @param img
+     */
+    public void resizeAppIcon(ImageView img){
+        int newHeight = 400;
+        int newWidth = 400;
+        img.requestLayout();
+        img.getLayoutParams().height = newHeight;
+
+        img.getLayoutParams().width = newWidth;
+
+        img.setScaleType(ImageView.ScaleType.FIT_XY);
+
+
+    }
+
+    /**
+     * The method return the db object. it made static in order for other activites to use this method.
+     * @return
+     */
     public static AppDatabase getDB(){return db;}
 
 
+
+
+
+////////////////////////////Asycn Tasks that are called in the SignIn Activity/////////////////////////////////////////
+
+    /**
+     * The async task is responsible to:
+     * 1- get the username and password entered by the user.
+     * 2- checks if the user name and password exists in the db.
+     * 3- notify the user if the credentials dont exist by letting him sign up.
+     * 4- if the credential are correct it let the user go to the main activity.
+     *
+     * The sign in activity is called when the user open the app and when the user clicks on
+     * a notification to take his prescription.
+     *
+     * if the signin activity is called from the notification, before going to the main activity,
+     * an intent is initilized carrying the user and the prescription the took. This is done in order
+     * for the main activity process the prescription that the user took.
+     *
+     *
+     */
     private  class signInAsyncTask extends AsyncTask<String[], Void, Boolean> {
 
         private User u;
 
         @Override
+        /**
+         * The method shows a waiting dialog to the user
+         */
         protected void onPreExecute() {
 
             login.setEnabled(false);
@@ -128,6 +220,9 @@ public class SigninActivity extends AppCompatActivity {
             progressDialog.show();
         }
         @Override
+        /**
+         * Checks if the credential exists or not.
+         */
         protected Boolean doInBackground(String[]... credentials) {
 
             String cre []= credentials[0];
@@ -149,6 +244,12 @@ public class SigninActivity extends AppCompatActivity {
         }
 
         @Override
+        /**
+         * if the credentials are correct then go to the main activity.
+         * if the signin activity is called from a notification then carry the user and the prescription
+         * they took to the main activity.
+         *
+         */
         protected void onPostExecute(Boolean credentialResult) {
 
             progressDialog.dismiss();
