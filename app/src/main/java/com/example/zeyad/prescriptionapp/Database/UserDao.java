@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * Created by Zeyad on 7/8/2018.
+ *This class provides the different sql queries to the entity User.
  */
 
 @Dao

@@ -9,6 +9,15 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Created by Zeyad on 7/5/2018.
+ *
+ * This class is responsible to encrypt/decrypt user passwords before storing it in the db.
+ * It is used as a layer of protection in case the db fall under some unwanted users.
+ *
+ * It is use AES and a symmetric key cryptography.
+ *
+ * It consists of 2 methods:
+ * 1- encrypt: to encrypt the password.
+ * 2- decrypt: to decrypt the password.
  */
 
 public class AES {
@@ -16,6 +25,12 @@ public class AES {
     private static final String ALGORITHM = "AES";
     private static final String KEY = "1Hbfh667adfDEJ78";
 
+    /**
+     * The method is used to encrypt the password before saving it to the db
+     * @param value
+     * @return
+     * @throws Exception
+     */
     public static String encrypt(String value) throws Exception
     {
         Key key = generateKey();
@@ -27,6 +42,12 @@ public class AES {
 
     }
 
+    /**
+     * The method is used to decrypt the password after getting it from the db.
+     * @param value
+     * @return
+     * @throws Exception
+     */
     public static String decrypt(String value) throws Exception
     {
         Key key = generateKey();
@@ -39,6 +60,11 @@ public class AES {
 
     }
 
+    /**
+     * The method is used to generate a new key for encryption/decryption.
+     * @return
+     * @throws Exception
+     */
     private static Key generateKey() throws Exception
     {
         Key key = new SecretKeySpec(AES.KEY.getBytes(),AES.ALGORITHM);

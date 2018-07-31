@@ -9,6 +9,14 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 /**
  * Created by Zeyad on 7/9/2018.
+ *
+ * This class is describing the DoseTime entity.
+ *
+ * Every Dose Time object has:
+ * 1- 5 dose times.
+ * 2- 5 dose times unique notification ids.
+ * 3- unique prescription name.
+ * 4- unique user id.
  */
 
 @Entity(foreignKeys = {

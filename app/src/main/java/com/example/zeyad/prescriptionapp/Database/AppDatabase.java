@@ -2,6 +2,13 @@ package com.example.zeyad.prescriptionapp.Database;
 
 /**
  * Created by Zeyad on 7/5/2018.
+ *
+ * This class is responsible to initilize the database of the mob app.
+ *
+ * It works as an a gateway to the interface of different DAOs:
+ * 1- PrescriptionDao
+ * 2- UserDao
+ * 3- DoseTimeDao
  */
 
 import android.arch.persistence.db.SupportSQLiteDatabase;

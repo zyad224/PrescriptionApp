@@ -11,6 +11,8 @@ import java.util.List;
 
 /**
  * Created by Zeyad on 7/5/2018.
+ *
+ * This class provides the different sql queries to the entity Prescription.
  */
 
 @Dao

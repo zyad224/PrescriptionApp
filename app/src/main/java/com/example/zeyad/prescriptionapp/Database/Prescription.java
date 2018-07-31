@@ -14,6 +14,17 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 /**
  * Created by Zeyad on 7/5/2018.
+ *
+ *This class is describing the Prescription entity.
+ *
+ * Every Prescription object has:
+ * 1- name
+ * 2- type
+ * 3- numberTakings: total amount of doses
+ * 4- forgetTakings: amount of doses taken from prescription
+ * 5- doctor details.
+ * 6- dose
+ * 7- unique user id
  */
 
 @Entity(foreignKeys = @ForeignKey(entity = User.class,

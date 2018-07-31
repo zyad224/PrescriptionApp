@@ -16,6 +16,13 @@ import static android.content.Context.ALARM_SERVICE;
 
 /**
  * Created by Zeyad on 7/18/2018.
+ *
+ * This is the Notification Class. it is responsible to:
+ *
+ * 1- create  unique notification ids for each dose time of each prescription.
+ * 2- create the notification by calling the notification service.
+ * 3- saving notification ids in the db.
+ * 4- cancel notifications.
  */
 
 
@@ -32,10 +39,13 @@ public class Notification {
     private Prescription prescriptionToShowInNotfi;
 
 
-
-
-
-
+    /**
+     * This is the constructor of the notification class.
+     * It recieves the precription and list of prescription times and context.
+     * @param prescriptionTime
+     * @param prescription
+     * @param ctx
+     */
     public Notification(DoseTime prescriptionTime,Prescription prescription, Context ctx){
 
         this.prescription=prescription;
@@ -52,6 +62,13 @@ public class Notification {
 
     }
 
+    /**
+     * The method responsible to generate notifications for every prescription time.
+     * It uses alarm manager to call the notification service.
+     * It also use the method generateNotificationIDs to generate unique notification ids
+     * then save them in the db.
+     *
+     */
     private void generateNotification(){
          Intent intent= new Intent (this.ctx, NotificationService.class);
 
@@ -71,6 +88,11 @@ public class Notification {
     }
 
 
+    /**
+     * The method is responsible to generate unique notification ids by using the
+     * NotificationIDGenerator which use shared preference to save the last notification id on the app.
+     * @param intent
+     */
     private void generateNotificationIDs( Intent intent){
 
         for(int i=0;i<doseTimings.length;i++){
@@ -108,13 +130,16 @@ public class Notification {
 
     }
 
+    /**
+     * The method deletes the notification of each dose time of a prescription.
+     * It fetches the unique notification ids from db then create and pending intent and canecl it.
+     * @param dt
+     */
     public static void cancelNotification(DoseTime dt){
 
-        System.out.println("in cancel:");
 
         Intent intent = new Intent(ctx, NotificationService.class);
         ArrayList<Integer> cancelledNotificationIds=new ArrayList<Integer>();
-        System.out.println("in cancel:");
 
         cancelledNotificationIds.add(dt.getDoseTime1EventID());
         cancelledNotificationIds.add(dt.getDoseTime2EventID());
@@ -124,7 +149,6 @@ public class Notification {
 
         AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
 
-        System.out.println("in cancel:"+cancelledNotificationIds.size());
 
 
         for(int i=0;i<cancelledNotificationIds.size();i++) {
@@ -135,12 +159,16 @@ public class Notification {
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, cancelledNotificationIds.get(i), intent, 0);
                 am.cancel(pendingIntent);
                 pendingIntent.cancel();
-                System.out.println("notification cancelled no:"+ cancelledNotificationIds.get(i));
             }
         }
 
 
     }
+
+    /**
+     * The async task is responsible to:
+     * To save notification ids for the 5 dose times for every prescription added tot he app.
+     */
     private  class saveDoseNotificationIDs extends AsyncTask<Void, Void, Boolean> {
 
 

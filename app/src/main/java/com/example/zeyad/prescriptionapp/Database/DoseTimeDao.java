@@ -9,6 +9,8 @@ import java.util.List;
 
 /**
  * Created by Zeyad on 7/10/2018.
+ *
+ * This class provides the different sql queries to the entity DoseTime.
  */
 
 @Dao

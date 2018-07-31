@@ -10,6 +10,15 @@ import java.io.Serializable;
 
 /**
  * Created by Zeyad on 7/5/2018.
+ *
+ *This class is describing the user entity.
+ *
+ * Every User object has:
+ * 1- name
+ * 2- password
+ * 3- username
+ * 4- encrypted  & decrypted password
+ *
  */
 
 @Entity
