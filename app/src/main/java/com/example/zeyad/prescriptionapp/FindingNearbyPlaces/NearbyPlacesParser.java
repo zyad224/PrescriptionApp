@@ -10,6 +10,10 @@ import java.util.List;
 
 /**
  * Created by Zeyad on 7/29/2018.
+ *
+ * This class is responsible to parse google places.
+ * It recieves the google places in json format.
+ * Parse it and return a list<hashmap> for each location.
  */
 
 public class NearbyPlacesParser {

@@ -19,6 +19,13 @@ import java.util.List;
 
 /**
  * Created by Zeyad on 7/29/2018.
+ *
+ * This class is responsible to use the Google Place Api to find
+ * nearby places in a radius of 3km from the user.
+ *
+ * It has 2 methods:
+ * 1- executeSearchUrl: to find google place near the user
+ * 2- DrawNearbyPlaces: to draw the place on the google map.
  */
 
 public class FindNearby extends AsyncTask<Object, String, String> {
@@ -41,7 +48,6 @@ public class FindNearby extends AsyncTask<Object, String, String> {
             e.printStackTrace();
         }
 
-        System.out.print("google place:"+googlePlaces);
         return googlePlaces;
     }
 
@@ -56,6 +62,14 @@ public class FindNearby extends AsyncTask<Object, String, String> {
     }
 
 
+    /**
+     * The method recieves google place api url and execute it.
+     *
+     *
+     * @param searchUrl
+     * @return
+     * @throws IOException
+     */
     private String executeSearchURL(String searchUrl) throws IOException {
         String dataExecutedFromURL = "";
         String lineToRead = "";
@@ -92,6 +106,11 @@ public class FindNearby extends AsyncTask<Object, String, String> {
     }
 
 
+    /**
+     * The method recieves a list of hasmap of nearby places.
+     * It iterates on the nearby places and draw them on the map
+     * @param nearbyPlacesList
+     */
     private void DrawNearbyPlaces(List<HashMap<String, String>> nearbyPlacesList) {
         for (int i = 0; i < nearbyPlacesList.size(); i++) {
             MarkerOptions markerOptions = new MarkerOptions();
