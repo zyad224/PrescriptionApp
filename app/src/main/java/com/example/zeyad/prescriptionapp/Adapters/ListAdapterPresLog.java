@@ -32,6 +32,23 @@ import static android.app.PendingIntent.getActivity;
 
 /**
  * Created by Zeyad on 7/12/2018.
+ *
+ * This class is a custom adapter for the prescription log listview.
+ *
+ * It consists of 4 method:
+ *  1- drawPrescriptionImage: draw prescription title depending on prescription type.
+ *  2- cancelNotification: cancel a notification when a prescription is deleted.
+ *  3- filter: filter prescription log depending on user input.
+ *  4- updateList: update prescription list when any changes happens.
+ *
+ *  1 Async Task:
+ *  delPrescAsyncTask: delete prescription from the db.
+ *
+ *  1 override method:
+ *  getView:this customize the apperance of the prescription list.
+ *
+ *
+ *
  */
 
 public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
@@ -43,6 +60,9 @@ public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
     private Context ctx;
 
     public static int counter=0;
+
+
+
     public ListAdapterPresLog(@NonNull Context context, int resource, List<Prescription> textViewResourceId) {
         super(context, resource, textViewResourceId);
         list=textViewResourceId;
@@ -52,11 +72,17 @@ public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
     }
 
 
-    public void updateList() {
-        this.notifyDataSetChanged();
-    }
+
 
     @Override
+    /**
+     * The method customize the prescription log list.
+     * It add icons to each prescription and set the text of each row in the list.
+     *
+     * It adds delete buttons for each row with their clickListeners.
+     * If user clciked on the delete button, the prescription is deleted from the db
+     * and from the prescription log list.
+     */
     public View getView(int position, View convertView, ViewGroup parent) {
 
         View view=convertView;
@@ -91,6 +117,12 @@ public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
         return view;
     }
 
+
+    /**
+     * The method adds the appropriate icon to the prescription depending on its type.
+     * @param listItemText
+     * @param prescriptionType
+     */
     private void drawPrescriptionImage(TextView listItemText, String prescriptionType){
 
         switch(prescriptionType){
@@ -116,7 +148,46 @@ public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
         }
 
     }
-    // Filter Class
+
+    /**
+     * The method deletes the notification of each dose time of a prescription.
+     * It fetches the unique notification ids from db then create and pending intent and canecl it.
+     * @param dt
+     */
+    private void cancelNotification(DoseTime dt){
+
+
+        Intent intent = new Intent(ctx, NotificationService.class);
+        ArrayList<Integer> cancelledNotificationIds=new ArrayList<Integer>();
+
+        cancelledNotificationIds.add(dt.getDoseTime1EventID());
+        cancelledNotificationIds.add(dt.getDoseTime2EventID());
+        cancelledNotificationIds.add(dt.getDoseTime3EventID());
+        cancelledNotificationIds.add(dt.getDoseTime4EventID());
+        cancelledNotificationIds.add(dt.getDoseTime5EventID());
+
+        AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
+
+
+
+        for(int i=0;i<cancelledNotificationIds.size();i++) {
+            System.out.println(cancelledNotificationIds.get(i));
+
+
+            if(cancelledNotificationIds.get(i)!=0) {
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, cancelledNotificationIds.get(i), intent, 0);
+                am.cancel(pendingIntent);
+                pendingIntent.cancel();
+            }
+        }
+
+
+    }
+
+    /**
+     * The method manipulates the prescription log by filtering it depending on user input.
+     * @param charText
+     */
     public void filter(String charText) {
         charText = charText.toLowerCase(Locale.getDefault());
         System.out.println("counter:"+counter);
@@ -152,6 +223,22 @@ public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
 
     }
 
+    /**
+     * The method updates the prescription log when its changed.
+     */
+    public void updateList() {
+        this.notifyDataSetChanged();
+    }
+
+
+
+
+
+    /**
+     * The async task is responsible to:
+     * 1- cancel notification of a certain prescription dose times.
+     * 2- delete the prescription from the db.
+     */
     private  class delPrescAsyncTask extends AsyncTask<String, Void, Boolean> {
 
         private User u;
@@ -172,7 +259,6 @@ public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
             String pName= prescription[0];
             AppDatabase db= SigninActivity.getDB();
             u= MainActivity.signedInUser;
-            System.out.println("del:"+pName);
 
             try {
 
@@ -195,7 +281,6 @@ public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
         @Override
         protected void onPostExecute(Boolean Result) {
 
-            System.out.print(Result);
             progressDialog.dismiss();
             delete.setEnabled(true);
 
@@ -206,38 +291,6 @@ public class ListAdapterPresLog extends ArrayAdapter<Prescription> {
     }
 
 
-    private void cancelNotification(DoseTime dt){
 
-        System.out.println("in cancel:");
-
-        Intent intent = new Intent(ctx, NotificationService.class);
-        ArrayList<Integer> cancelledNotificationIds=new ArrayList<Integer>();
-        System.out.println("in cancel:");
-
-        cancelledNotificationIds.add(dt.getDoseTime1EventID());
-        cancelledNotificationIds.add(dt.getDoseTime2EventID());
-        cancelledNotificationIds.add(dt.getDoseTime3EventID());
-        cancelledNotificationIds.add(dt.getDoseTime4EventID());
-        cancelledNotificationIds.add(dt.getDoseTime5EventID());
-
-        AlarmManager am = (AlarmManager) ctx.getSystemService(Context.ALARM_SERVICE);
-
-        System.out.println("in cancel:"+cancelledNotificationIds.size());
-
-
-        for(int i=0;i<cancelledNotificationIds.size();i++) {
-            System.out.println(cancelledNotificationIds.get(i));
-
-
-            if(cancelledNotificationIds.get(i)!=0) {
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(ctx, cancelledNotificationIds.get(i), intent, 0);
-                am.cancel(pendingIntent);
-                pendingIntent.cancel();
-                System.out.println("notification cancelled no:"+ cancelledNotificationIds.get(i));
-            }
-        }
-
-
-    }
 
 }

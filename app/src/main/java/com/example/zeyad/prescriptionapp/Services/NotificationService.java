@@ -17,6 +17,16 @@ import com.example.zeyad.prescriptionapp.Acitvities.SigninActivity;
 
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 
+/**
+ * This class is the Notification Service that responsible to show notification to the user to take thier prescriptions.
+ *
+ * 1- It works as a BroadcastReceiver, it recieves the prescription from an intent.
+ * 2- It uses the NotificationManager to create a notification channel for notification (required for Anroid +8).
+ * 3- It uses NotificationCompat to build the notification.
+ * 4- If notification is clicked outside the app, the app directs the user ot signIn activity.
+ * 6- It uses unique ids for notifications.
+ *
+ */
 public class NotificationService extends BroadcastReceiver {
 
 

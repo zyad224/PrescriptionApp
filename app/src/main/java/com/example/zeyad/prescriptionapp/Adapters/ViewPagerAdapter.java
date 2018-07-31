@@ -19,7 +19,7 @@ import com.example.zeyad.prescriptionapp.Fragments.PrescriptionLog;
  *
  * getItem(int position): return the fragment depending on which tab the user selects.
  * getCount(): return the number of fragments.
- * getPageTitile(int position): write the names of the tabs in the tabLayout.
+ * getPageTitle(int position): write the names of the tabs in the tabLayout.
  *
  *
  */
@@ -28,6 +28,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
     }
+
+
 
     @Override
     /**

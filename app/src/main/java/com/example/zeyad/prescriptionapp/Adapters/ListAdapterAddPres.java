@@ -17,6 +17,13 @@ import java.util.ArrayList;
 
 /**
  * Created by Zeyad on 7/3/2018.
+ *
+ *This class is a custom adapter for the prescription dose times list in AddPrescription Fragment.
+ *
+ * It consists of 2 method:
+ *  1- updateList: to update the list whenever its changed
+ *  2- getView:customize the apperance of the prescription list
+ *
  */
 
 public class ListAdapterAddPres extends ArrayAdapter<Prescription> {
