@@ -57,6 +57,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/DoctorName"
                     android:inputType="textPersonName"
+                    android:visibility="gone"
                     android:layout_width="fill_parent">
                 </EditText>
 
@@ -65,6 +66,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/DoctorNumber"
                     android:inputType="phone"
+                    android:visibility="gone"
                     android:layout_width="fill_parent">
                 </EditText>
 
@@ -139,14 +141,14 @@
     <ListView
         android:id="@+id/TimeDoseList"
         android:layout_width="match_parent"
-        android:layout_height="176dp"
+        android:layout_height="230dp"
         android:layout_gravity="bottom"
         android:drawSelectorOnTop="false"
         android:paddingBottom="2dip"
         android:paddingTop="2dip"
         android:textColor="@android:color/black"
         android:textSize="7pt"
-        tools:layout_editor_absoluteY="391dp" />
+        tools:layout_editor_absoluteY="337dp" />
 
 
 

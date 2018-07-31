@@ -55,7 +55,10 @@
         <service
             android:name=".Services.GPSService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
+
+        <activity android:name=".Acitvities.DoctorActivity" />
+        <activity android:name=".Acitvities.MyDoctors"></activity>
     </application>
 
 </manifest>

@@ -265,7 +265,7 @@ public class AddPrescription extends Fragment  {
                 // if yes disable form and add doses to the list
                 if((!PrescriptionDose.equals("Dose"))&& (hours!=null&&minutes!=null&&am_pm!=null)
                         && (!PrescriptionType.equals("Type"))&&(!PrescriptionName.isEmpty()
-                        && !DoctorName.isEmpty()&& !DoctorNumber.isEmpty() && !NumberOFTakings.isEmpty()))
+                         && !NumberOFTakings.isEmpty()))
                 {
                     enableForm(false);
                     addPrescriptionListView();
@@ -347,14 +347,7 @@ public class AddPrescription extends Fragment  {
             Snackbar.make(insertPresInDB,
                     "Please Add the number of Takings", Snackbar.LENGTH_LONG).show();
         }
-        else if(DoctorName.isEmpty()){
-            Snackbar.make(insertPresInDB,
-                    "Please Add a Doctor Name", Snackbar.LENGTH_LONG).show();
-        }
-        else if(DoctorNumber.isEmpty()){
-            Snackbar.make(insertPresInDB,
-                    "Please Add a Doctor Number", Snackbar.LENGTH_LONG).show();
-        }
+
         else if(hours==null||minutes==null||am_pm==null){
             Snackbar.make(insertPresInDB,
                     "Please Choose  a Time", Snackbar.LENGTH_LONG).show();

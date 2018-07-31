@@ -16,6 +16,7 @@ import android.view.MenuItem;
 
 import com.example.zeyad.prescriptionapp.Adapters.ViewPagerAdapter;
 import com.example.zeyad.prescriptionapp.Database.AppDatabase;
+import com.example.zeyad.prescriptionapp.Database.Doctor;
 import com.example.zeyad.prescriptionapp.Database.DoseTime;
 import com.example.zeyad.prescriptionapp.Database.Prescription;
 import com.example.zeyad.prescriptionapp.Database.User;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         userTakePrescription();
         userUpcomingPrescriptions();
         userPrescriptionPieChart();
+        checkDoctorDetails();
 
     }
 
@@ -191,6 +193,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    private void checkDoctorDetails(){
+        Boolean firstRun=pref.getBoolean("firstRun7",true);
+
+        if(firstRun){
+            startActivity(new Intent(MainActivity.this, DoctorActivity.class));
+
+        }
+
+
+    }
+
     /**
      * The method is responsible to set the icons of the tabs for different pages.
      * Pages:
@@ -247,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case (R.id.menue_doctor):
                 intent=new Intent(this, MapsActivity.class);
-                intent.putExtra("searchKey","doctors");
+                intent.putExtra("searchKey","doctor");
                 break;
 
             case (R.id.menue_pharmacy):
@@ -255,6 +269,11 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("searchKey","pharmacy");
                 break;
 
+
+            case (R.id.menue_myDoctors):
+                intent=new Intent(this, MyDoctors.class);
+                intent.putExtra("searchKey","pharmacy");
+                break;
             default:
                 return super.onOptionsItemSelected(item);
 

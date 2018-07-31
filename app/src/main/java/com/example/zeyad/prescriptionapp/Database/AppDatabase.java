@@ -16,12 +16,13 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.migration.Migration;
 
-@Database(entities = {Prescription.class, User.class,DoseTime.class}, version = 4)
+@Database(entities = {Prescription.class, User.class,DoseTime.class, Doctor.class}, version = 6)
 public abstract class AppDatabase extends RoomDatabase {
 
     public abstract PrescriptionDao prescriptionDao();
     public abstract UserDao userDao();
     public abstract DoseTimeDao dosetimeDao();
+    public abstract DoctorDao doctorDao();
 
 
 

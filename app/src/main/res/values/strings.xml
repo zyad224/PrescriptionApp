@@ -25,5 +25,8 @@
     <string name="upcomingPrescriptions">Upcoming Prescriptions &#x1F60A; </string>
     <string name="title_activity_maps">Map</string>
 
+    <string name="DocViewTitle">My Doctors</string>
+
+
 
 </resources>

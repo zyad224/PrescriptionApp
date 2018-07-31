@@ -22,11 +22,12 @@
         android:title="Nearby Pharmacies"
         app:showAsAction="never" />
 
-    <item
-        android:id="@+id/menu_refresh_log"
-        android:title="@string/refreshLog"
-        app:showAsAction="never" />
 
+    <item
+        android:id="@+id/menue_myDoctors"
+        android:icon="@mipmap/pills"
+        android:title="My Doctors"
+        app:showAsAction="never" />
     <item
         android:id="@+id/menue_aboutus"
         android:orderInCategory="100"
