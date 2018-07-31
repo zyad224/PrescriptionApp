@@ -28,7 +28,13 @@ import java.util.Locale;
 
 
 /**
-
+ * This is the add prescription log fragment.
+ * It initializes the interface of the prescription log fragment .
+ * It shows a history of prescriptions of the user.
+ * It shows details of each prescription image, name, dose, type, etc.
+ * User can delete prescriptions that they dont need anymore.
+ *
+ *
  */
 public class PrescriptionLog extends Fragment {
 
@@ -48,6 +54,7 @@ public class PrescriptionLog extends Fragment {
     }
 
 
+//////////////////////////////PrescriptionLog Fragment starts here/////////////////////////////////////////////////////////
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,6 +69,23 @@ public class PrescriptionLog extends Fragment {
         return view;
     }
 
+
+
+
+
+//////////////////////////////PrescriptionLog methods/////////////////////////////////////////////////////////
+
+    /**
+     *The method is responsible to set the interface of PresLog Fragment:
+     * 1- it initialize prescription log list.
+     * 2- it initialize the search box edit text.
+     * 3- it sets the adapter for the prescription log list.
+     * 4- it fetches all the prescription of the user and add them to the list.
+     * 5- it adds a listener to the search box.
+     * 6- it refreshes the list when user swipes down.
+     *
+     * @param view
+     */
     private void prescriptionLogGUI(View view){
 
 
@@ -122,6 +146,9 @@ public class PrescriptionLog extends Fragment {
     }
 
 
+    /**
+     * The method fetches all prescriptions of the user and add them to the list
+     */
     public  void refreshPrescriptionLog(){
 
         new fetchPrescAsyncTask().execute(prescriptionsLogs);
@@ -131,32 +158,12 @@ public class PrescriptionLog extends Fragment {
 
 
     }
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-
-        super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser&&view!=null){
-
-            if(prescriptionsLogs.size()==0)
-                showEmptyLogNotification();
 
 
-
-        }
-
-
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!getUserVisibleHint())
-            return;
-
-
-    }
-
+    /**
+     * The method shows a dialog to the user when the prescription log list is
+     * empty notifying them to add a prescription in order to see them in the history.
+     */
     private void showEmptyLogNotification(){
         AlertDialog.Builder adb=new AlertDialog.Builder(getContext());
         adb.setTitle("Prescription Log");
@@ -167,6 +174,17 @@ public class PrescriptionLog extends Fragment {
 
     }
 
+
+
+
+/////////////////////////////Asycn Tasks that are called in the PrescriptionLog Fragment/////////////////////////////////////////
+
+
+    /**
+     * The async task is responsible to:
+     * 1- get all the prescriptions of the user signed in to the app.
+     * 2- update the prescription log list by prescriptions
+     */
     private  class  fetchPrescAsyncTask extends AsyncTask<ArrayList<Prescription>, Void, Boolean> {
 
         private User u;
@@ -219,6 +237,41 @@ public class PrescriptionLog extends Fragment {
 
 
         }
+
+
+    }
+
+
+
+/////////////////////////////////////////////Fragment override methods//////////////////////////////////////////////////////////
+
+    @Override
+    /**
+     * The method is called when fragment is seen by user.
+     * It checks if the prescription list is empty or not.
+     * If empty -> show notification to the user to add a prescription.
+     */
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser&&view!=null){
+
+            if(prescriptionsLogs.size()==0)
+                showEmptyLogNotification();
+
+
+
+        }
+
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!getUserVisibleHint())
+            return;
 
 
     }

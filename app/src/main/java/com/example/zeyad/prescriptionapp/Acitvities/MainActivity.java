@@ -298,9 +298,20 @@ public class MainActivity extends AppCompatActivity {
             long seconds=  (doseTime.getTimeInMillis()-timeNow.getTimeInMillis())/1000;
             int hours= (int) seconds/3600;
 
-            if(hours<=2&&hours>=0) {
-                return true;
+            int timeDiff=timeNow.compareTo(doseTime);
+
+            System.out.println("timediff:"+ timeDiff);
+            //time passed
+            if(timeDiff>0){
+                return false;
             }
+            else{
+
+                if(hours<=2&&hours>=0) {
+                    return true;
+                }
+            }
+
 
             return false;
         }
@@ -341,6 +352,8 @@ public class MainActivity extends AppCompatActivity {
                            timeOfDose.set(Calendar.AM_PM,Calendar.PM);
 
                        if(compareCurrentTimeWDoseTime(timeOfDose)){
+
+                           System.out.println(""+ t.getPrescription_name());
 
                            Prescription p=db.prescriptionDao().getSpecificPrescription
                                    (t.getPrescription_name(),MainActivity.signedInUser.getUserName());
@@ -469,6 +482,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
 
 }
 

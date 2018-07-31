@@ -32,23 +32,20 @@ import com.example.zeyad.prescriptionapp.Acitvities.SigninActivity;
 
 import java.util.ArrayList;
 
+
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
+ * This is the add prescription fragment.
+ * It initializes the interface of the add prescription fragment .
+ * It provides a form to add a prescription details.
+ * User can add doses times to the prescription being added.
+ * After adding the prescription, a notification is generated for each dose time of that prescription.
  *
- * to handle interaction events.
- * Use the {@link AddPrescription#newInstance} factory method to
- * create an instance of this fragment.
+ * The interface is user-friendly and can be extended easily.
+ * .
+ *
  */
 public class AddPrescription extends Fragment  {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private Spinner DoseSpinner,PrescripitonTypeSpinner;
     private TimePicker tp;
     private FloatingActionButton TimeDosefab,Resetfab,insertPresInDB;
@@ -74,33 +71,8 @@ public class AddPrescription extends Fragment  {
 
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AddPrescription.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AddPrescription newInstance(String param1, String param2) {
-        AddPrescription fragment = new AddPrescription();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-    }
+/////////////////////////////AddPrescription Fragment starts here/////////////////////////////////////////////////////////
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -112,6 +84,15 @@ public class AddPrescription extends Fragment  {
     }
 
 
+//////////////////////////////////AddPrescription Fragment methods//////////////////////////////////////////////////////////
+
+    /**
+     * The method is responsible to set the interface of AddPres Fragment:
+     * 1- it initialize the edit text fields in the fragment
+     * 2- it initialize 2 spinners {timedose and prescription type}
+     * 3- it initialize the the time picker to choose time from.
+     * @param view
+     */
     private void addPrescriptionGUI(View view){
 
         initializeEditText(view);
@@ -119,15 +100,106 @@ public class AddPrescription extends Fragment  {
         initializeTimePicker(view);
         initializeDoseAmountSpinner(view);
         initializeTimeDoseList(view);
+        fabListeners();
+
 
     }
 
+    /**
+     * The method initialize the edit text fields in the fragment
+     * @param view
+     */
     private void initializeEditText(View view){
         presName=(EditText)view.findViewById(R.id.PrescriptionName);
         docName=(EditText)view.findViewById(R.id.DoctorName);
         docNumber=(EditText)view.findViewById(R.id.DoctorNumber);
         takings=(EditText)view.findViewById(R.id.Takings);
     }
+
+    /**
+     * The method initialize the prescription type spinner and sets its adapter.
+     *
+     * @param view
+     */
+    private void  initializePrescriptionTypeSpinner(View view){
+        PrescripitonTypeSpinner = (Spinner) view.findViewById(R.id.PrescriptionType);
+        presTypeAdapter = new ArrayAdapter(getContext(),android.R.layout.simple_spinner_item,PrescriptionTypeArray);
+        presTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        PrescripitonTypeSpinner.setAdapter(presTypeAdapter);
+
+        PrescripitonTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                Log.d("type", "onItemSelected: "+PrescriptionTypeArray[position] );
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+    }
+
+    /**
+     * The method initialize the time picker for choosing time
+     * @param view
+     */
+    private void initializeTimePicker(View view){
+
+        tp = (TimePicker)view.findViewById(R.id.Time);
+        tp.setIs24HourView(true);
+
+        tp.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+            @Override
+            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                //Display the new time to app interface
+                String AMPM = "AM";
+                if(hourOfDay>11)
+                {
+                    hourOfDay = hourOfDay-12;
+                    AMPM = "PM";
+                }
+                hours=String.valueOf(hourOfDay);
+                minutes=String.valueOf(minute);
+                am_pm=String.valueOf(AMPM);
+            }
+        });
+    }
+
+    /**
+     * The method initialize the spinner for choosing the amount of dose and its adapter.
+     * @param view
+     */
+    private void initializeDoseAmountSpinner(View view){
+        DoseSpinner = (Spinner) view.findViewById(R.id.Dose);
+        presDoseAdapter = new ArrayAdapter(getContext(),android.R.layout.simple_spinner_item,DoseAmountArray);
+        presDoseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        DoseSpinner.setAdapter(presDoseAdapter);
+
+        DoseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                Log.d("type", "onItemSelected: "+DoseAmountArray[position] );
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+    }
+
+    /**
+     * The method initialize the time dose list of the prescription added.
+     * It set the adapter of the list, the timedose button, and the reset button.
+     *
+     * It also enables deleting rows from the list by clicking ont the item to delete.
+     *
+     * @param view
+     */
     private void initializeTimeDoseList(View view){
 
 
@@ -162,14 +234,17 @@ public class AddPrescription extends Fragment  {
             }
         });
 
-        fabListeners();
 
-
-
-        Log.d("list", "list content: "+arrayList);
 
     }
 
+    /**
+     * The method adds clickListeners to the buttons on the fragment.
+     * 3 buttons available:
+     * 1- TimeDosefab: add time of doses to the list.
+     * 2- Resetfab: clear the form to enter a new prescription.
+     * 3- insertPres: add a new prescription to the db.
+     */
     private void fabListeners(){
 
         TimeDosefab.setOnClickListener(new View.OnClickListener() {
@@ -186,6 +261,8 @@ public class AddPrescription extends Fragment  {
                 PrescriptionType= PrescripitonTypeSpinner.getSelectedItem().toString();
                 PrescriptionDose = DoseSpinner.getSelectedItem().toString();
 
+                // check if the user filled all the fields in the form
+                // if yes disable form and add doses to the list
                 if((!PrescriptionDose.equals("Dose"))&& (hours!=null&&minutes!=null&&am_pm!=null)
                         && (!PrescriptionType.equals("Type"))&&(!PrescriptionName.isEmpty()
                         && !DoctorName.isEmpty()&& !DoctorNumber.isEmpty() && !NumberOFTakings.isEmpty()))
@@ -193,6 +270,7 @@ public class AddPrescription extends Fragment  {
                     enableForm(false);
                     addPrescriptionListView();
                 }
+                // notify user to fill missing field
                 else
                 {
                     fillMissingFields();
@@ -238,6 +316,10 @@ public class AddPrescription extends Fragment  {
     }
 
 
+    /**
+     * The method enable/disable the add prescription form.
+     * @param decision
+     */
     private void enableForm(boolean decision){
 
         presName.setEnabled(decision);
@@ -248,6 +330,10 @@ public class AddPrescription extends Fragment  {
         DoseSpinner.setEnabled(decision);
 
     }
+
+    /**
+     * The method notify user to fill missing fields in the add prescription form.
+     */
     private void fillMissingFields(){
         if(PrescriptionName.isEmpty()){
             Snackbar.make(insertPresInDB,
@@ -279,6 +365,16 @@ public class AddPrescription extends Fragment  {
         }
 
     }
+
+    /**
+     * The method add doses of a a prescription to the dosetime prescription list.
+     *
+     * The user can add a maximum of 5 doses per prescription.
+     *
+     * The app notifies if the user added the max number of doses and ask them to either
+     * delete some or add the prescription tot he db.
+     *
+     */
     private void addPrescriptionListView(){
         if(minutes.length()==1)
             minutes="0"+minutes;
@@ -302,71 +398,12 @@ public class AddPrescription extends Fragment  {
                     "You cant add more, The List is full (remove from list or submit)", Snackbar.LENGTH_LONG).show();
         }
     }
-    private void initializeTimePicker(View view){
 
-        tp = (TimePicker)view.findViewById(R.id.Time);
-        tp.setIs24HourView(true);
-
-        tp.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
-            @Override
-            public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                //Display the new time to app interface
-                String AMPM = "AM";
-                if(hourOfDay>11)
-                {
-                    hourOfDay = hourOfDay-12;
-                    AMPM = "PM";
-                }
-                hours=String.valueOf(hourOfDay);
-                minutes=String.valueOf(minute);
-                am_pm=String.valueOf(AMPM);
-                Log.d("Time:", "onTimeChanged: "+hours+ ":" + minutes + ":" + am_pm);
-            }
-        });
-    }
-
-    private void  initializePrescriptionTypeSpinner(View view){
-        PrescripitonTypeSpinner = (Spinner) view.findViewById(R.id.PrescriptionType);
-        presTypeAdapter = new ArrayAdapter(getContext(),android.R.layout.simple_spinner_item,PrescriptionTypeArray);
-        presTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        PrescripitonTypeSpinner.setAdapter(presTypeAdapter);
-
-        PrescripitonTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                Log.d("type", "onItemSelected: "+PrescriptionTypeArray[position] );
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
-
-        });
-    }
-    private void initializeDoseAmountSpinner(View view){
-        DoseSpinner = (Spinner) view.findViewById(R.id.Dose);
-        presDoseAdapter = new ArrayAdapter(getContext(),android.R.layout.simple_spinner_item,DoseAmountArray);
-        presDoseAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        DoseSpinner.setAdapter(presDoseAdapter);
-
-        DoseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                Log.d("type", "onItemSelected: "+DoseAmountArray[position] );
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
-
-        });
-    }
-
-
-  private void clearGUIElements(){
+    /**
+     * The method clears all the gui elements in the add prescription form.
+     *
+     */
+    private void clearGUIElements(){
       if(arrayList!=null) {
           arrayList.clear();
           maximumSizeOfTimeDoseList=5;
@@ -393,6 +430,17 @@ public class AddPrescription extends Fragment  {
       enableForm(true);
   }
 
+
+
+////////////////////////////Asycn Tasks that are called in the AddPrescription Fragment/////////////////////////////////////////
+
+    /**
+     * The async task is responsible to:
+     * 1- get the info from the form
+     * 2- add the new prescription to the db.
+     * 3- add the times of the doses to the db.
+     * 4- generates a notification of that prescription.
+     */
     private  class addPrescriptionAsyncTask extends AsyncTask<ArrayList<Prescription>, Void, Boolean> {
 
         private User u;
@@ -507,7 +555,15 @@ public class AddPrescription extends Fragment  {
 
     }
 
+
+
+
+/////////////////////////////////////////////Fragment override methods//////////////////////////////////////////////////////////
+
     @Override
+    /**
+     * When the fragment is available to the user call, clearGUIElements()
+     */
     public void setUserVisibleHint(boolean isVisibleToUser) {
 
         super.setUserVisibleHint(isVisibleToUser);
@@ -515,11 +571,9 @@ public class AddPrescription extends Fragment  {
 
             onResume();
 
-            //This means this fragment is visible to user so you can write code to refresh the fragment here by reloaded the data.
 
         }
 
-      //  Log.d("addpres", "onCreate: "+MainActivity.signedInUser.getUserName());
 
 
     }
