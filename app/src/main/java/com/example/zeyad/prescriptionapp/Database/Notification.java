@@ -1,18 +1,28 @@
 package com.example.zeyad.prescriptionapp.Database;
 
 import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.media.RingtoneManager;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 
+import com.example.zeyad.prescriptionapp.R;
 import com.example.zeyad.prescriptionapp.Services.NotificationService;
 import com.example.zeyad.prescriptionapp.Acitvities.SigninActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static android.content.Context.ALARM_SERVICE;
+import static com.example.zeyad.prescriptionapp.Services.NotificationService.NOTIFICATION_CHANNEL_ID;
+
 
 /**
  * Created by Zeyad on 7/18/2018.
@@ -59,6 +69,56 @@ public class Notification {
         doseTimings[4]=this.prescriptionTime.getDoseTime5();
         generateNotification();
 
+
+    }
+
+    public Notification(Prescription prescription, Context ctx){
+
+        this.prescription=prescription;
+        this.ctx=ctx;
+
+        refillNotification();
+
+    }
+
+    private void refillNotification(){
+
+
+        int notificationId= NotificationIDGenerator.getID();
+
+       NotificationManager nM = (NotificationManager) this.ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
+
+            // Configure the notification channel.
+            notificationChannel.setDescription("Channel description");
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.setVibrationPattern(new long[]{0, 1000, 500, 1000});
+            notificationChannel.enableVibration(true);
+            nM.createNotificationChannel(notificationChannel);
+        }
+
+        Intent intent = new Intent(this.ctx, SigninActivity.class);
+        intent.putExtra("pname",this.prescription.getPrescriptionName());
+        intent.putExtra("puser",this.prescription.getUser_id());
+        intent.putExtra("refill","1");
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent intentToStart = PendingIntent.getActivity(this.ctx, notificationId, intent, FLAG_UPDATE_CURRENT);
+
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this.ctx, NOTIFICATION_CHANNEL_ID)
+                .setVibrate(new long[]{0, 100, 100, 100, 100, 100})
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setSmallIcon(R.drawable.notification_icon)
+                .setContentTitle("Refill your Prescription now"+ ","+ this.prescription.getUser_id())
+                .setContentText(this.prescription.getPrescriptionName())
+                .setContentIntent(intentToStart)
+                .setAutoCancel(true);
+
+
+        nM.notify(notificationId, builder.build());
 
     }
 

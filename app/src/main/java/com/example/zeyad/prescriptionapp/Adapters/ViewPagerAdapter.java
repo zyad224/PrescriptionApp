@@ -70,7 +70,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         String title = null;
         if (position == 0)
         {
-            title = "History";
+            title = "Prescriptions";
         }
         else if (position == 1)
         {

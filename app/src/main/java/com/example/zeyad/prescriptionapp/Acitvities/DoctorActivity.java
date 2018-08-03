@@ -19,6 +19,15 @@ import com.example.zeyad.prescriptionapp.Database.Doctor;
 import com.example.zeyad.prescriptionapp.Database.User;
 import com.example.zeyad.prescriptionapp.R;
 
+/**
+ * This class is responsible to show the DoctorActivity to the user.
+ *
+ * The DoctorActivity allows the users to add their doctors contacts to the app.
+ *
+ * This activity launches only when the app starts for the first time.
+ *
+ * The user might also add their doctors contacts from My Doctor List from the menue.
+ */
 public class DoctorActivity extends AppCompatActivity {
 
     private EditText doctor1,doctor2,doctor3;
@@ -30,6 +39,7 @@ public class DoctorActivity extends AppCompatActivity {
 
 
 
+ /////////////////////////Doctor Activity starts here/////////////////////////////////////////////////////////
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +50,17 @@ public class DoctorActivity extends AppCompatActivity {
     }
 
 
+/////////////////////////Doctor Activity methods/////////////////////////////////////////////////////////
+
+    /**
+     * The method is responsible to set the GUI of Doctor Activity.
+     * It sets:
+     * 1- the edit boxes.
+     * 2- the image of doctor.
+     * 3- the add doctor floating button.
+     *
+     *
+     */
     private void doctorGUI(){
         doctor1=(EditText) findViewById(R.id.doctor1);
         doctor2=(EditText) findViewById(R.id.doctor2);
@@ -79,6 +100,10 @@ public class DoctorActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * The method check if the user has input at least one doctor contacts.
+     * @return
+     */
     private boolean validateUserinput(){
         doc1=doctor1.getText().toString();
         doc2=doctor2.getText().toString();
@@ -107,7 +132,14 @@ public class DoctorActivity extends AppCompatActivity {
     }
 
 
+//////////////////////////Asycn Tasks that are called on Doctor Activity/////////////////////////////////////////
 
+    /**
+     * The async task is responsible to:
+     * 1- fetch doctor details from form.
+     * 2- add doctor details to the db.
+     * 3- notify the user that they added their doctor details.
+     */
     private  class addDoctorToDB extends AsyncTask<String[], Void, Boolean> {
 
         private boolean flag;
@@ -141,7 +173,7 @@ public class DoctorActivity extends AppCompatActivity {
                         "You added Doctors Details!", Snackbar.LENGTH_LONG).show();
 
                 getSharedPreferences("MyPrefs", MODE_PRIVATE).edit()
-                        .putBoolean("firstRun7", false).apply();
+                        .putBoolean("firstRun8", false).apply();
 
                 finish();
             }

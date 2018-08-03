@@ -11,6 +11,14 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/menue_dentist"
+        android:icon="@mipmap/pills"
+        android:title="Nearby Dentists"
+        app:showAsAction="never" />
+
+
+
+    <item
         android:id="@+id/menue_hospitals"
         android:icon="@mipmap/pills"
         android:title="Nearby Hospitals"
@@ -26,7 +34,7 @@
     <item
         android:id="@+id/menue_myDoctors"
         android:icon="@mipmap/pills"
-        android:title="My Doctors"
+        android:title="My Doctors List"
         app:showAsAction="never" />
     <item
         android:id="@+id/menue_aboutus"

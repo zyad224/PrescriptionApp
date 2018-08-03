@@ -167,7 +167,7 @@ public class PrescriptionLog extends Fragment {
     private void showEmptyLogNotification(){
         AlertDialog.Builder adb=new AlertDialog.Builder(getContext());
         adb.setTitle("Prescription Log");
-        adb.setMessage(" Prescription Log is Emtpy. Add a prescription now ! ");
+        adb.setMessage(" Prescription Log is Emtpy."+"\n" +" Add a prescription now ! ");
 
         adb.setNegativeButton("Ok", null);
         adb.show();

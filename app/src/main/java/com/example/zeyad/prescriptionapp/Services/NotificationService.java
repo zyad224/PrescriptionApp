@@ -31,7 +31,8 @@ public class NotificationService extends BroadcastReceiver {
 
 
     private static final int NOTIFICATION_ID = 1;
-    private static final String NOTIFICATION_CHANNEL_ID = "my_notification_channel";
+    public static final String NOTIFICATION_CHANNEL_ID = "my_notification_channel";
+    private static  NotificationManager nM;
 
     public NotificationService() {
     }
@@ -53,7 +54,7 @@ public class NotificationService extends BroadcastReceiver {
 
 
 
-        NotificationManager nM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        nM = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "My Notifications", NotificationManager.IMPORTANCE_DEFAULT);
 
@@ -81,6 +82,7 @@ public class NotificationService extends BroadcastReceiver {
                 .setContentText(prescriptionName +"-" + prescriptionType+ " , " + prescriptionDose + " Dose")
                 .setContentIntent(intentToStart)
                 .setAutoCancel(true);
+
 
 
         nM.notify(NOTIFICATION_ID, builder.build());

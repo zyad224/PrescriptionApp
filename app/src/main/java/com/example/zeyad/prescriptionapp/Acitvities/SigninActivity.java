@@ -263,9 +263,13 @@ public class SigninActivity extends AppCompatActivity {
                 Intent intentFromNotification = getIntent();
                 String precriptionName="";
                 String prescriptionUser="";
+                String refillValid="";
                 if(intentFromNotification!=null) {
                     precriptionName = intentFromNotification.getStringExtra("pname");
                     prescriptionUser = intentFromNotification.getStringExtra("puser");
+                    refillValid=intentFromNotification.getStringExtra("refill");
+
+                    System.out.println("refill num:"+refillValid);
                 }
 
 
@@ -273,6 +277,8 @@ public class SigninActivity extends AppCompatActivity {
                 Intent intentToMainActivity = new Intent( getApplicationContext(),MainActivity.class);
                 intentToMainActivity.putExtra("user", u);
                 intentToMainActivity.putExtra("prescriptionTaken", precriptionName);
+                intentToMainActivity.putExtra("prescriptionRefill", refillValid);
+
 
                 startActivity(intentToMainActivity);
             }

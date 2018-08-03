@@ -2,6 +2,7 @@ package com.example.zeyad.prescriptionapp.Acitvities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.icu.util.TimeZone;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -18,6 +19,7 @@ import com.example.zeyad.prescriptionapp.Adapters.ViewPagerAdapter;
 import com.example.zeyad.prescriptionapp.Database.AppDatabase;
 import com.example.zeyad.prescriptionapp.Database.Doctor;
 import com.example.zeyad.prescriptionapp.Database.DoseTime;
+import com.example.zeyad.prescriptionapp.Database.Notification;
 import com.example.zeyad.prescriptionapp.Database.Prescription;
 import com.example.zeyad.prescriptionapp.Database.User;
 import com.example.zeyad.prescriptionapp.R;
@@ -69,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
         userUpcomingPrescriptions();
         userPrescriptionPieChart();
         checkDoctorDetails();
+        prescruptionRefillCheck();
+
 
     }
 
@@ -181,27 +185,74 @@ public class MainActivity extends AppCompatActivity {
         Intent intentFromSignInActivity = getIntent();
         signedInUser=(User)intentFromSignInActivity .getSerializableExtra("user");
         String prescriptionTakenFromNoti=intentFromSignInActivity .getStringExtra("prescriptionTaken");
+        String prescriptionRefill=intentFromSignInActivity .getStringExtra("prescriptionRefill");
 
 
+         System.out.println("see:"+prescriptionTakenFromNoti);
+        System.out.println("see2:"+prescriptionRefill);
 
-        if(prescriptionTakenFromNoti!=null) {
+
+        if(prescriptionTakenFromNoti!=null &&prescriptionRefill==null) {
             new reducePrescriptionTakings().execute(prescriptionTakenFromNoti);
+            prescriptionTakenFromNoti="";
             System.out.println("prescription taken main activity:" + prescriptionTakenFromNoti);
 
 
         }
 
+        else if(prescriptionRefill!=null){
+            System.out.println("refill needed ");
+            prescriptionRefill="";
+
+            refillPresciption(prescriptionTakenFromNoti);
+        }
+
+
+
     }
 
 
+    /**
+     * The method is responsible to refill a specific prescription.
+     *
+     * It is executed when the user clicks on the notification and confirm that they refilled their app.
+     * @param prescriptionToRefill
+     */
+    private void refillPresciption(String prescriptionToRefill){
+
+        new refillPrescription().execute(prescriptionToRefill);
+
+
+    }
+
+    /**
+     * The method  is responsible to run the DoctorActivity to the user to add thier doctors.
+     *
+     * The DoctorActivity is shown to the user when they run the app for the first time only.
+     */
     private void checkDoctorDetails(){
-        Boolean firstRun=pref.getBoolean("firstRun7",true);
+        Boolean firstRun=pref.getBoolean("firstRun8",true);
 
         if(firstRun){
             startActivity(new Intent(MainActivity.this, DoctorActivity.class));
 
         }
 
+
+    }
+
+    /**
+     * The method is responsible to run an async task to check if any prescription needs a refill or not
+     *
+     * If a prescription needs a refill (ie the doses are finished), a notification is generated instantly
+     * to notify the user.
+     *
+     * In order for the user to refill a prescription, they must click on that notification and sign in to
+     * confirm.
+     */
+    private void prescruptionRefillCheck(){
+
+        new PrescriptionRefillNotification().execute();
 
     }
 
@@ -244,7 +295,7 @@ public class MainActivity extends AppCompatActivity {
      * 3- Nearby Pharmacies.
      *
      * When any of the choices above clicked, a new map activity intent starts to show the nearby
-     * { hostpitals, doctors, pharmacies}.
+     * { hostpitals, doctors, dentists, pharmacies}.
      *
      */
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -263,6 +314,12 @@ public class MainActivity extends AppCompatActivity {
                 intent=new Intent(this, MapsActivity.class);
                 intent.putExtra("searchKey","doctor");
                 break;
+
+            case (R.id.menue_dentist):
+                intent=new Intent(this, MapsActivity.class);
+                intent.putExtra("searchKey","dentist");
+                break;
+
 
             case (R.id.menue_pharmacy):
                 intent=new Intent(this, MapsActivity.class);
@@ -413,6 +470,8 @@ public class MainActivity extends AppCompatActivity {
      *  and dose already taken is 30 : 30>>> which means the prescription is finished and need refill.
      *
      *  5- It show the user the prescription he took and the amount of doses left for that prescription.
+     *
+     *  6- if the user is out of prescription, it notifies the user to refill their prescription.
      */
     private  class reducePrescriptionTakings extends AsyncTask<String, Void, Boolean> {
 
@@ -435,10 +494,18 @@ public class MainActivity extends AppCompatActivity {
             takingsBeforeDose= prescriptionTakenByUser.getForgetTakings();
             takingsAfterDose= takingsBeforeDose+doseToBeTaken;
 
+            System.out.println("in reduce:"+initialPrescriptionTakings+","+takingsAfterDose);
+
             if(takingsAfterDose<=initialPrescriptionTakings) {
+               System.out.println("in reduce2:"+initialPrescriptionTakings+","+takingsAfterDose);
                 db.prescriptionDao().updatePrescriptionTakings(takingsAfterDose,
                         prescriptionTakenByUser.getPrescriptionName(), signedInUser.getUserName());
             }
+            else{
+                return false;
+            }
+
+
 
 
 
@@ -453,7 +520,16 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
                 adb.setTitle("Prescription Taken");
                 adb.setMessage(" You have taken:" + doseToBeTaken+ " "+ "Doses from"+" "+prescriptionTakenByUser.getPrescriptionName()
-                +"."+ " You have:"+ Integer.toString(initialPrescriptionTakings-takingsAfterDose)+" "+"Doses left !!!");
+                +"."+"\n"+ " You have:"+ Integer.toString(initialPrescriptionTakings-takingsAfterDose)+" "+"Doses left !!!");
+
+                adb.setNegativeButton("Ok", null);
+                adb.show();
+            }
+            else{
+                AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
+                adb.setTitle("Prescription needs to be refilled");
+                adb.setMessage(" You have to refill:"+prescriptionTakenByUser.getPrescriptionName()
+                        +"\n"+"click on the notifiation to refill!!!");
 
                 adb.setNegativeButton("Ok", null);
                 adb.show();
@@ -501,7 +577,86 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * The async task is responsible to:
+     * 1- Search all the user prescriptions.
+     * 2- if any prescription needs to refill. it generate an instant notification to notify the user.
+     *
+     * Note: the notification will not stop to pop to the user until the user clicks on it and refill
+     * their prescriptions.
+     */
+    private  class PrescriptionRefillNotification extends AsyncTask<Void, Void, Boolean> {
+
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+
+
+            AppDatabase db = SigninActivity.getDB();
+            List<Prescription> pres = db.prescriptionDao().getUserPrescription(MainActivity.signedInUser.getUserName());
+
+            for (Prescription p : pres) {
+
+                int initialPrescriptionTakings = p.getTakings();
+                int takingsUntilNow = p.getForgetTakings();
+                if (initialPrescriptionTakings - takingsUntilNow == 0) {
+                    System.out.println("in noti 2");
+                    Notification n = new Notification(p, getApplicationContext());
+
+                }
+
+            }
+
+            return true;
+
+        }
+    }
+
+
+    /**
+     * The async task is responsible to:
+     * 1- fetch a specific prescription from the db.
+     * 2- refill the prescription by setting the user takingsUntillnow back to zero(forgetTakings in the db scheme).
+     * 3- notify the user that they refilled their prescriptions.
+     */
+    private  class refillPrescription extends AsyncTask<String, Void, Boolean> {
+
+
+        Prescription p;
+        @Override
+        protected Boolean doInBackground(String... pres) {
+
+
+            AppDatabase db = SigninActivity.getDB();
+            String prescriptionName=pres[0];
+            p= db.prescriptionDao().getSpecificPrescription(prescriptionName,MainActivity.signedInUser.getUserName());
+            db.prescriptionDao().updatePrescriptionTakings(0,prescriptionName,MainActivity.signedInUser.getUserName());
+
+            return true;
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean insertingResult) {
+
+            if(insertingResult) {
+                AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
+                adb.setTitle("Prescription Refilled");
+                adb.setMessage(" You have refilled:" + p.getPrescriptionName()+" , "+ p.getPrescriptionType()+"."+"\n"+
+                        " You have:"+ p.getTakings()+" "+"Doses left !!!");
+
+                adb.setNegativeButton("Ok", null);
+                adb.show();
+            }
+
+
+        }
+    }
+
     @Override
+    /**
+     * The method minimize the app to the user when they try to go back to the sign in activity.
+     */
     public void onBackPressed() {
         moveTaskToBack(true);
     }

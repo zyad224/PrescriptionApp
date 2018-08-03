@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:hint="Doctor Name" />
+            android:hint="First Doctor" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -48,8 +48,8 @@
         <EditText android:id="@+id/number1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:hint="Doctor Number"/>
+            android:inputType="phone"
+            android:hint="Telephone"/>
     </android.support.design.widget.TextInputLayout>
 
 
@@ -62,7 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:hint="Doctor Name" />
+            android:hint="Second Doctor" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -73,8 +73,8 @@
         <EditText android:id="@+id/number2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:hint="Doctor Number"/>
+            android:inputType="phone"
+            android:hint="Telephone"/>
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -86,7 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:hint="Doctor Name" />
+            android:hint="Third Doctor" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -97,8 +97,8 @@
         <EditText android:id="@+id/number3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:hint="Doctor Number"/>
+            android:inputType="phone"
+            android:hint="Telephone"/>
     </android.support.design.widget.TextInputLayout>
 
 
