@@ -33,15 +33,9 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
         onDelete=CASCADE))
 public class Prescription {
 
-
-
-//    @PrimaryKey(autoGenerate = true)
-//    public int id;
-
     @PrimaryKey
     @ColumnInfo(name="prescription_name")
     @NonNull public String prescriptionName;
-
 
     @ColumnInfo(name="prescription_type")
     public String prescriptionType;
@@ -64,13 +58,8 @@ public class Prescription {
     @ColumnInfo(name="dose_time")
     public String doseTime;
 
-
     @ColumnInfo(name="user_id")
     public String user_id;
-
-
-
-
 
     public Prescription(String prescriptionName,String prescriptionType,int numberTakings,int forgetTakings,String doctorName,
                         String doctorNumber, int prescriptionDose, String user_id){
