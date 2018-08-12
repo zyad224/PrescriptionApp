@@ -50,7 +50,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     private double latitude;
     private double longitude;
-    private int PROXIMITY_RADIUS = 3000;
+    private int PROXIMITY_RADIUS = 50000;
     private String searchKey="";
 
     private GoogleApiClient mGoogleApiClient;

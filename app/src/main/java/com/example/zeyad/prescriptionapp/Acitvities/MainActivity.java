@@ -329,7 +329,6 @@ public class MainActivity extends AppCompatActivity {
 
             case (R.id.menue_myDoctors):
                 intent=new Intent(this, MyDoctors.class);
-                intent.putExtra("searchKey","pharmacy");
                 break;
             default:
                 return super.onOptionsItemSelected(item);
