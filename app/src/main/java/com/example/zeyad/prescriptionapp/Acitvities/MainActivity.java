@@ -598,7 +598,7 @@ public class MainActivity extends AppCompatActivity {
 
                 int initialPrescriptionTakings = p.getTakings();
                 int takingsUntilNow = p.getForgetTakings();
-                if (initialPrescriptionTakings - takingsUntilNow == 0) {
+                if ((initialPrescriptionTakings - takingsUntilNow) == 0) {
                     System.out.println("in noti 2");
                     Notification n = new Notification(p, getApplicationContext());
 

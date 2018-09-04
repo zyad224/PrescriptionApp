@@ -44,9 +44,11 @@ public class FindNearby extends AsyncTask<Object, String, String> {
 
         try {
            googlePlaces= executeSearchURL(urlSearch);
+           System.out.println("google place:"+ googlePlaces);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
         return googlePlaces;
     }
